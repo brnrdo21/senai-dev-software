@@ -2,25 +2,21 @@ namespace MinhaApi.Models;
 
 public class Produto
 {
-    public int Id
-    {
+    public int Id {
         get; set;
     }
-    public string Nome
-    {
+    public string Nome {
         get; set;
     }
+
     = string.Empty;
-    public decimal Preco
-    {
+    public decimal Preco {
         get; set;
     }
-    public int Estoque
-    {
+    public int Estoque {
         get; set;
     }
-    public bool Ativo
-    {
+    public bool Ativo {
         get; set;
     }
     = true;
