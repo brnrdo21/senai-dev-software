@@ -1,4 +1,4 @@
-public class Tipo {
+/*public class Tipo {
     public int Id {
         get;
         set;
@@ -8,4 +8,4 @@ public class Tipo {
         set;
     }
     = string.Empty;
-}
+}*/
