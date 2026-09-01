@@ -8,11 +8,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-// ✅ Registra o Repository
 builder.Services.AddScoped<IProdutoRepository,
 ProdutoRepository>();
 
-// ✅ Registra a Service
 builder.Services.AddScoped<IProdutoService,
 ProdutoService>();
 
