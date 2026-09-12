@@ -38,18 +38,4 @@ public class VendaController
             return NotFound();
         return Ok(venda);
     }
-    // PUT /api/venda/1
-    [HttpPut("{id}")]
-    public IActionResult Update(
-        int id,
-        [FromBody] Venda venda)
-{
-    var atualizado =
-        _service.Update(id, venda);
-
-    if (atualizado == null)
-        return NotFound();
-
-    return Ok(atualizado);
-}
 }

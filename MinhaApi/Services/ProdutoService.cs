@@ -11,7 +11,7 @@ public class ProdutoService : IProdutoService {
     public IEnumerable<Produto> GetAll()
     => _repo.GetAll();
 
-    public Produto? GetById(int id)
+    public Produto? GetById(int id) 
     => _repo.GetById(id);
 
     public Produto Create(Produto produto) {

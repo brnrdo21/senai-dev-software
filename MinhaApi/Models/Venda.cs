@@ -11,7 +11,9 @@ public class Venda
      public int Produto_id {
         get; set;
     }
-
+    public int Quantidade {
+        get; set;
+    }
     public decimal Valor {
         get; set;
     }
