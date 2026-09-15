@@ -13,7 +13,7 @@ public class VendaService : IVendaService {
         _produtorepo = produtorepo;
     }
 
-    public Venda Create(Venda venda){
+    public Venda Add(Venda venda){
         var produto = _produtorepo.GetById(venda.Produto_id);
         if(produto == null) 
         throw new ArgumentException("Produto não encontrado");

@@ -8,7 +8,7 @@ public class VendaRepository : IVendaRepository {
     public VendaRepository(IConfiguration config) 
       => _connectionString = config.GetConnectionString("DefaultConnection")!;
 
-    public void Add(Venda v) {
+    public Venda Add(Venda v) {
     using var conn = new MySqlConnection(_connectionString);
     conn.Open();
 
@@ -26,5 +26,6 @@ public class VendaRepository : IVendaRepository {
     // Executa a inserção e recupera o ID gerado pelo MySQL
     var idGerado = cmd.ExecuteScalar();
     v.Id = Convert.ToInt32(idGerado);
+    return v;
 }
 }

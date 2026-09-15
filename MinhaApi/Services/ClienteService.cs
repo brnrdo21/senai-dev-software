@@ -30,5 +30,10 @@ public class ClienteService : IClienteService {
            return true;
         }
         return false;
-        }    
+        }
+
+    object IClienteService.GetAll()
+    {
+        return GetAll();
     }
+}

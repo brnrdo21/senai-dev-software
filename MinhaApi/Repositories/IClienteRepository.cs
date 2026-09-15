@@ -8,5 +8,4 @@ public interface IClienteRepository {
     void Add(Cliente cliente);
     void Update(Cliente cliente);
     void Delete(int id);
-    object GetById(object clienteId);
 }
