@@ -38,16 +38,12 @@ public class ClienteController : ControllerBase {
 
     var criado = _service.Create(cliente);
 
-    return CreatedAtAction(
-        nameof(GetById),
-        new { id = criado.Id },
-        criado);
+    return CreatedAtAction(nameof(GetById),new {
+     id = criado.Id },criado);
 }
     // PUT /api/cliente/1
     [HttpPut("{id}")]
-    public IActionResult Update(
-        int id,
-        [FromBody] Cliente cliente)
+    public IActionResult Update( int id, [FromBody] Cliente cliente)
 {
     var atualizado =
         _service.Update(id, cliente);

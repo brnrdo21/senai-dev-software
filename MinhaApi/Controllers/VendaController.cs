@@ -23,14 +23,21 @@ public class VendaController: ControllerBase
 
    return Ok(criado);
 }
+ // GET /api/produto
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var produtos = _service.GetAll();
+        return Ok(produtos);
+    }
 
     // // GET /api/venda/1
-    // [HttpGet("{id}")]
-    // public IActionResult GetById(int id)
-    // {
-    //     var venda = _service.GetById(id);
-    //     if (venda == null)
-    //         return NotFound();
-    //     return Ok(venda);
-    // }
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
+    {
+         var venda = _service.GetById(id);
+         if (venda == null)
+             return NotFound();
+         return Ok(venda);
+     }
 }

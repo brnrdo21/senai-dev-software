@@ -19,10 +19,10 @@ public class VendaService : IVendaService {
         throw new ArgumentException("Produto não encontrado");
 
         if(venda.Quantidade <= 0)
-        throw new ArgumentException("Quantidade insuficiente");
+        throw new ArgumentException("Quantidade inválida");
 
         if(produto.Estoque < venda.Quantidade)
-        throw new ArgumentException("Quantidade insuficiente");
+        throw new ArgumentException("Estoque insuficiente");
 
         if(venda.Cliente_id <= 0)
         throw new ArgumentException("Cliente inválido");
@@ -35,4 +35,9 @@ public class VendaService : IVendaService {
         var valorTotal = produto.Preco * venda.Quantidade;
         return (int)valorTotal;
     }
+    public IEnumerable<Venda> GetAll()
+    => _repo.GetAll();
+
+    public Venda? GetById(int id)
+    => _repo.GetById(id);
 }

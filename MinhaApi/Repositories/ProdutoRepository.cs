@@ -72,7 +72,6 @@ public class ProdutoRepository : IProdutoRepository {
     cmd.Parameters.AddWithValue("@Ativo", p.Ativo);
     cmd.ExecuteNonQuery();
 }
-
 public void Delete(int id) {
     using var conn = new MySqlConnection(_connectionString);
     conn.Open();
