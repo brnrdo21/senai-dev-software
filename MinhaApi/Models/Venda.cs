@@ -5,6 +5,15 @@ public class Venda
     public int Id {
         get; set;
     }
+    public string Cliente { 
+        get; set; 
+    }
+    =string.Empty;
+
+    public string Produto {
+         get; set;
+    }
+    = string.Empty;
     public int Cliente_id {
         get; set;
     }

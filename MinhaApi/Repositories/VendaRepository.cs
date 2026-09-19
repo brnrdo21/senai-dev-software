@@ -55,9 +55,10 @@ public IEnumerable<Venda> GetAll() {
       using var conn = new MySqlConnection(_connectionString);
       conn.Open();
 
-      const string sql = @"SELECT id, cliente_id, produto_id, valor, data_venda, ativo
+      const string sql = @"SELECT cliente_id, produto_id, cliente.nome AS Cliente, produtos.nome AS Produto, venda.valor, data_venda, venda.ativo
                            FROM venda
-                           WHERE id = @Id";
+                           JOIN cliente ON cliente.id = venda.cliente_id
+                           JOIN produtos ON produtos.id = venda.produto_id";
       using var cmd = new MySqlCommand(sql, conn);
       cmd.Parameters.AddWithValue("@Id", id);
 
@@ -67,7 +68,6 @@ public IEnumerable<Venda> GetAll() {
 
       return new Venda
       {
-          Id = reader.GetInt32("id"),
           Cliente_id = reader.GetInt32("cliente_id"),
           Produto_id = reader.GetInt32("produto_id"),
           Valor = reader.GetDecimal("valor"),
