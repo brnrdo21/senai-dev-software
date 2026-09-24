@@ -32,8 +32,4 @@ public class ClienteService : IClienteService {
         return false;
         }
 
-    object IClienteService.GetAll()
-    {
-        return GetAll();
-    }
 }
