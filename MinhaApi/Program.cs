@@ -30,6 +30,12 @@ FornecedoresRepository>();
 builder.Services.AddScoped<IFornecedoresService,
 FornecedoresService>();
 
+builder.Services.AddScoped<IDepartamentosRepository,
+DepartamentosRepository>();
+
+builder.Services.AddScoped<IDepartamentosService,
+DepartamentosService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
