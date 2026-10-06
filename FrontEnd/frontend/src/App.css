@@ -1,0 +1,378 @@
+/* =========================
+   RESET
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #17201f;
+  color: #ffffff;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+
+/* =========================
+   APP
+========================= */
+
+.app {
+  min-height: 100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  position: fixed;
+
+  left: 0;
+  top: 0;
+
+  width: 240px;
+  height: 100vh;
+
+  background: #287f7a;
+
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+
+  padding: 20px 15px;
+
+  transition: width 0.25s ease;
+
+  z-index: 1000;
+
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.12);
+}
+
+.sidebar.collapsed {
+  width: 75px;
+}
+
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 35px;
+}
+
+.sidebar.collapsed .sidebar-header {
+  justify-content: center;
+}
+
+.logo {
+  font-size: 21px;
+  font-weight: bold;
+  color: white;
+  white-space: nowrap;
+}
+
+
+/* =========================
+   BOTÃO MENU
+========================= */
+
+.toggle-button {
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #55aaa4;
+
+  color: white;
+
+  font-size: 20px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.toggle-button:hover {
+  background: #a8e6cf;
+  color: #17201f;
+}
+
+
+/* =========================
+   MENU
+========================= */
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 13px;
+  padding: 14px;
+
+  color: white;
+  text-decoration: none;
+
+  border-radius: 12px;
+
+  transition: all 0.25s ease;
+
+  white-space: nowrap;
+}
+
+.sidebar.collapsed .menu-link {
+  justify-content: center;
+  padding: 14px 0;
+}
+
+.sidebar.collapsed .menu-link span:first-child {
+  font-size: 21px;
+}
+
+.menu-link span:first-child {
+  font-size: 20px;
+}
+
+.menu-link:hover {
+  background: #55aaa4;
+  color: #17201f;
+}
+
+.menu-link.active {
+  background: #a8e6cf;
+
+  color: #17201f;
+
+  font-weight: bold;
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================
+   LINHA SUAVE NOS NOMES
+========================= */
+
+.menu-text {
+  position: relative;
+  padding-bottom: 4px;
+}
+
+/* =========================
+   CONTEÚDO PRINCIPAL
+========================= */
+
+.main-content {
+  margin-left: 240px;
+
+  min-height: 100vh;
+
+  padding: 45px 55px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(85, 170, 164, 0.15),
+      transparent 35%
+    ),
+    #17201f;
+
+  transition: margin-left 0.25s ease;
+}
+
+
+/* QUANDO SIDEBAR ESTÁ MINIMIZADO */
+
+.sidebar-collapsed .main-content {
+  margin-left: 75px;
+}
+
+
+/* =========================
+   TÍTULOS
+========================= */
+
+h1 {
+  font-size: 32px;
+
+  margin-bottom: 8px;
+
+  color: white;
+}
+
+h2 {
+  font-size: 21px;
+
+  color: #55aaa4;
+
+  margin-bottom: 25px;
+}
+
+
+/* =========================
+   FORMULÁRIO
+========================= */
+
+form {
+  width: 100%;
+  max-width: 550px;
+
+  background: #ffffff;
+
+  padding: 30px;
+
+  border-radius: 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+
+  margin-bottom: 35px;
+}
+
+
+/* Labels */
+
+form label {
+  display: block;
+
+  color: #287f7a;
+
+  font-size: 14px;
+
+  font-weight: bold;
+
+  margin-bottom: 7px;
+}
+
+
+/* Inputs */
+
+form input {
+  width: 100%;
+
+  padding: 13px 14px;
+
+  margin-bottom: 18px;
+
+  background: #f7faf9;
+
+  border: 1px solid rgba(40, 127, 122, 0.35);
+
+  border-radius: 10px;
+
+  color: #17201f;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+form input:focus {
+  border-color: #55aaa4;
+
+  box-shadow: 0 0 0 3px rgba(85, 170, 164, 0.12);
+}
+
+form input:focus {
+  border-color: #287f7a;
+
+  box-shadow: 0 0 0 3px rgba(85, 170, 164, 0.2);
+}
+
+
+/* =========================
+   BOTÃO CADASTRAR
+========================= */
+
+form button {
+  width: 100%;
+
+  padding: 13px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background: #287f7a;
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+form button:hover {
+  background: #55aaa4;
+
+  color: #17201f;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================
+   LISTA
+========================= */
+
+ul {
+  list-style: none;
+
+  width: 100%;
+
+  max-width: 700px;
+}
+
+li {
+  background: #ffffff;
+
+  color: #17201f;
+
+  border-left: 5px solid #287f7a;
+
+  padding: 17px 20px;
+
+  margin-bottom: 10px;
+
+  border-radius: 10px;
+
+  transition: 0.2s;
+}
+
+li:hover {
+  border-left-color: #fff6ad;
+
+  transform: translateX(3px);
+}
+
+li strong {
+  color: #287f7a;
+}

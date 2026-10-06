@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 // src/services/api.ts
 import axios from 'axios'
 
