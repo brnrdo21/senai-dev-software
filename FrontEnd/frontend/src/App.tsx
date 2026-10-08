@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom'
+
 import { useState } from 'react'
 
 import Sidebar from './components/Sidebar'
@@ -14,7 +20,13 @@ function App() {
   return (
     <BrowserRouter>
 
-      <div className={`app ${collapsed ? 'sidebar-collapsed' : ''}`}>
+      <div
+        className={`app ${
+          collapsed
+            ? 'sidebar-collapsed'
+            : ''
+        }`}
+      >
 
         <Sidebar
           collapsed={collapsed}
@@ -27,7 +39,12 @@ function App() {
 
             <Route
               path="/"
-              element={<Navigate to="/produtos" replace />}
+              element={
+                <Navigate
+                  to="/produtos"
+                  replace
+                />
+              }
             />
 
             <Route

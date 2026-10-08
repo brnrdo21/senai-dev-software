@@ -1,63 +1,142 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom'
+import {
+  MenuIcon,
+  XIcon,
+  PackageIcon,
+  UsersIcon
+} from './Icon'
 
 interface SidebarProps {
-  collapsed: boolean;
-  setCollapsed: (value: boolean) => void;
+  collapsed: boolean
+  setCollapsed: (value: boolean) => void
 }
 
-function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
+function Sidebar({
+  collapsed,
+  setCollapsed
+}: SidebarProps) {
   return (
-    <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
 
-      <div className="sidebar-header">
+      <div className="sidebar-top">
 
-        {!collapsed && (
-          <div className="logo">
-            Meu App
+        <div className="brand">
+
+          <div className="brand-mark">
+            <PackageIcon size={20} />
           </div>
-        )}
+
+          {!collapsed && (
+            <div className="brand-text">
+              <strong>Meu App</strong>
+              <span>Dashboard</span>
+            </div>
+          )}
+
+        </div>
 
         <button
-          className="toggle-button"
+          type="button"
+          className="sidebar-toggle"
           onClick={() => setCollapsed(!collapsed)}
+          title={collapsed ? 'Abrir menu' : 'Recolher menu'}
         >
-          ☰
+          {collapsed
+            ? <MenuIcon size={18} />
+            : <XIcon size={18} />
+          }
         </button>
 
       </div>
 
-      <nav className="sidebar-menu">
 
-        <NavLink
-          to="/produtos"
-          className={({ isActive }) =>
-            isActive ? "menu-link active" : "menu-link"
-          }
-        >
-          <span>📦</span>
+      <div className="sidebar-nav-area">
 
-          {!collapsed && (
-            <span className="menu-text">Produtos</span>
-          )}
-        </NavLink>
+        {!collapsed && (
+          <div className="nav-title">
+            NAVEGAÇÃO
+          </div>
+        )}
 
-        <NavLink
-          to="/clientes"
-          className={({ isActive }) =>
-            isActive ? "menu-link active" : "menu-link"
-          }
-        >
-          <span>👥</span>
+        <nav className="sidebar-nav">
 
-          {!collapsed && (
-            <span className="menu-text">Clientes</span>
-          )}
-        </NavLink>
+          <NavLink
+            to="/produtos"
+            className={({ isActive }) =>
+              `sidebar-link ${isActive ? 'active' : ''}`
+            }
+          >
 
-      </nav>
+            <span className="sidebar-link-icon">
+              <PackageIcon size={19} />
+            </span>
+
+            {!collapsed && (
+              <>
+                <span className="sidebar-link-text">
+                  Produtos
+                </span>
+
+                <span className="sidebar-link-arrow">
+                  →
+                </span>
+              </>
+            )}
+
+          </NavLink>
+
+
+          <NavLink
+            to="/clientes"
+            className={({ isActive }) =>
+              `sidebar-link ${isActive ? 'active' : ''}`
+            }
+          >
+
+            <span className="sidebar-link-icon">
+              <UsersIcon size={19} />
+            </span>
+
+            {!collapsed && (
+              <>
+                <span className="sidebar-link-text">
+                  Clientes
+                </span>
+
+                <span className="sidebar-link-arrow">
+                  →
+                </span>
+              </>
+            )}
+
+          </NavLink>
+
+        </nav>
+
+      </div>
+
+
+      {!collapsed && (
+        <div className="sidebar-bottom">
+
+          <div className="system-status">
+            <span className="status-indicator"></span>
+
+            <div>
+              <strong>Online</strong>
+              <span>Sistema funcionando</span>
+            </div>
+          </div>
+
+          <div className="sidebar-version">
+            v1.0.0
+          </div>
+
+        </div>
+      )}
 
     </aside>
-  );
+  )
 }
 
-export default Sidebar;
+export default Sidebar

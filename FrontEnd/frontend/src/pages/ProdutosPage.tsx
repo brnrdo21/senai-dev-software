@@ -1,29 +1,85 @@
 import { useEffect, useState } from 'react'
+
 import type { Produto } from '../types/Produto'
 import { produtoService } from '../services/ProdutoService'
+
 import ProdutoForm from '../components/ProdutoForm'
 import ProdutoList from '../components/ProdutoList'
+import { PackageIcon } from '../components/Icon'
 
 function ProdutosPage() {
   const [produtos, setProdutos] = useState<Produto[]>([])
   const [loading, setLoading] = useState(false)
-  const [erro, setErro] = useState<string | null>(null)
 
   const carregarProdutos = async () => {
+    setLoading(true)
+
     try {
-      setLoading(true)
-      setProdutos(await produtoService.listar())
-    } catch { setErro('Erro ao carregar produtos.') }
-    finally { setLoading(false) }
+      const dados = await produtoService.listar()
+      setProdutos(dados)
+    } catch {
+      setProdutos([])
+    } finally {
+      setLoading(false)
+    }
   }
 
-  useEffect(() => { carregarProdutos() }, [])
+  useEffect(() => {
+    carregarProdutos()
+  }, [])
 
-  return (<div>
-    <h1>Gestão de Produtos</h1>
-    <ProdutoForm onProdutoCriado={carregarProdutos} />
-    {erro && <p>{erro}</p>}
-    <ProdutoList produtos={produtos} loading={loading} />
-  </div>)
+  return (
+    <div className="page">
+
+      <header className="page-header">
+        <h1>Gestão de Produtos</h1>
+
+        <p>
+          Cadastre e acompanhe seus produtos.
+        </p>
+      </header>
+
+      <div className="content-grid">
+
+        {/* FORMULÁRIO */}
+        <section className="card">
+
+          <ProdutoForm
+            onProdutoCriado={carregarProdutos}
+          />
+
+        </section>
+
+        {/* LISTA */}
+       <section className="card">
+
+  <div className="card-heading">
+
+    <div>
+      <h2>Produtos cadastrados</h2>
+
+      <p>
+        Lista de produtos
+      </p>
+    </div>
+
+    <div className="count-badge">
+      {produtos.length}
+    </div>
+
+  </div>
+
+  <ProdutoList
+    produtos={produtos}
+    loading={loading}
+  />
+
+</section>
+
+      </div>
+
+    </div>
+  )
 }
+
 export default ProdutosPage
