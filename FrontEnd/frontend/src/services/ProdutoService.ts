@@ -15,9 +15,7 @@ export const produtoService = {
     return data
   },
 
-  criar: async (
-    produto: NovoProduto
-  ): Promise<Produto> => {
+  criar: async ( produto: NovoProduto ): Promise<Produto> => {
 
     const { data } =
       await api.post(
