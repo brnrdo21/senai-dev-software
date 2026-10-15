@@ -19,10 +19,13 @@ function ProdutoList({
     )
   }
 
-  if (produtos.length === 0) {
+  const listaProdutos = Array.isArray(produtos)
+    ? produtos
+    : []
+
+  if (listaProdutos.length === 0) {
     return (
       <div className="list-empty">
-
         <div className="empty-icon">
           <PackageIcon size={30} />
         </div>
@@ -34,39 +37,34 @@ function ProdutoList({
         <p>
           Cadastre seu primeiro produto.
         </p>
-
       </div>
     )
   }
 
   return (
     <ul className="app-list">
-
-      {produtos.map(produto => (
-
+      {listaProdutos.map((produto) => (
         <li
           className="app-list-item"
           key={produto.id}
         >
-
           <div className="list-avatar produto-avatar">
             <PackageIcon size={19} />
-            </div>
+          </div>
 
           <div className="list-info">
-
             <strong>
               {produto.nome}
             </strong>
 
             <span className="product-price">
-              R$ {produto.preco.toFixed(2)}
+              R${' '}
+              {Number(produto.preco).toFixed(2)}
             </span>
 
             <small>
               Estoque: {produto.estoque}
             </small>
-
           </div>
 
           <span
@@ -80,11 +78,8 @@ function ProdutoList({
               ? 'Ativo'
               : 'Inativo'}
           </span>
-
         </li>
-
       ))}
-
     </ul>
   )
 }

@@ -12,14 +12,12 @@ export const vendaService = {
     return data
   },
 
-  realizarVenda: async (
-    venda: NovaVenda
-  ): Promise<Venda> => {
-    const { data } = await api.post<Venda>(
-      '/venda',
-      venda
-    )
-
-    return data
-  },
+ realizarVenda: async (venda: {
+  clienteId: number
+  produtoId: number
+  quantidade: number
+}): Promise<Venda> => {
+  const { data } = await api.post('/venda', venda)
+  return data
+},
 }

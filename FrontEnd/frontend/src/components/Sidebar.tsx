@@ -1,9 +1,10 @@
 import { NavLink } from 'react-router-dom'
+
 import {
   MenuIcon,
   XIcon,
   PackageIcon,
-  UsersIcon
+  UsersIcon,
 } from './Icon'
 
 interface SidebarProps {
@@ -49,7 +50,6 @@ function Sidebar({
 
       </div>
 
-
       <div className="sidebar-nav-area">
 
         {!collapsed && (
@@ -60,13 +60,13 @@ function Sidebar({
 
         <nav className="sidebar-nav">
 
+          {/* Produtos */}
           <NavLink
             to="/produtos"
             className={({ isActive }) =>
               `sidebar-link ${isActive ? 'active' : ''}`
             }
           >
-
             <span className="sidebar-link-icon">
               <PackageIcon size={19} />
             </span>
@@ -82,17 +82,15 @@ function Sidebar({
                 </span>
               </>
             )}
-
           </NavLink>
 
-
+          {/* Clientes */}
           <NavLink
             to="/clientes"
             className={({ isActive }) =>
               `sidebar-link ${isActive ? 'active' : ''}`
             }
           >
-
             <span className="sidebar-link-icon">
               <UsersIcon size={19} />
             </span>
@@ -108,13 +106,32 @@ function Sidebar({
                 </span>
               </>
             )}
+          </NavLink>
 
+          {/* Vendas */}
+          <NavLink
+            to="/vendas"
+            className={({ isActive }) =>
+              `sidebar-link ${isActive ? 'active' : ''}`
+            }
+          >
+
+            {!collapsed && (
+              <>
+                <span className="sidebar-link-text">
+                  Vendas
+                </span>
+
+                <span className="sidebar-link-arrow">
+                  →
+                </span>
+              </>
+            )}
           </NavLink>
 
         </nav>
 
       </div>
-
 
       {!collapsed && (
         <div className="sidebar-bottom">

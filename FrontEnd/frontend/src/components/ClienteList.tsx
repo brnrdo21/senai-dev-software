@@ -19,10 +19,14 @@ function ClienteList({
     )
   }
 
-  if (clientes.length === 0) {
+  // Garante que clientes seja um array
+  const listaClientes = Array.isArray(clientes)
+    ? clientes
+    : []
+
+  if (listaClientes.length === 0) {
     return (
       <div className="list-empty">
-
         <div className="empty-icon">
           <UsersIcon size={30} />
         </div>
@@ -34,27 +38,22 @@ function ClienteList({
         <p>
           Cadastre seu primeiro cliente.
         </p>
-
       </div>
     )
   }
 
   return (
     <ul className="app-list">
-
-      {clientes.map(cliente => (
-
+      {listaClientes.map((cliente) => (
         <li
           className="app-list-item"
           key={cliente.id}
         >
-
           <div className="list-avatar cliente-avatar">
-          <UsersIcon size={19} />
+            <UsersIcon size={19} />
           </div>
 
           <div className="list-info">
-
             <strong>
               {cliente.nome}
             </strong>
@@ -68,17 +67,13 @@ function ClienteList({
                 CPF: {cliente.cpf}
               </small>
             )}
-
           </div>
 
           <span className="list-badge">
             Cliente
           </span>
-
         </li>
-
       ))}
-
     </ul>
   )
 }
