@@ -109,24 +109,14 @@ function Sidebar({
           </NavLink>
 
           {/* Vendas */}
-          <NavLink
-            to="/vendas"
-            className={({ isActive }) =>
-              `sidebar-link ${isActive ? 'active' : ''}`
-            }
-          >
-
-            {!collapsed && (
-              <>
-                <span className="sidebar-link-text">
-                  Vendas
-                </span>
-
-                <span className="sidebar-link-arrow">
-                  →
-                </span>
-              </>
-            )}
+       <NavLink
+     to="/vendas"
+     className={({ isActive }) =>
+      isActive ? 'sidebar-link active' : 'sidebar-link'
+      }
+    >
+          <span>↗</span>
+          {!collapsed && <span>Vendas</span>}
           </NavLink>
 
         </nav>

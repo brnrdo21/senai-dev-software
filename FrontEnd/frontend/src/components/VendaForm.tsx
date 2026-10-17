@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react'
 
+import { useEffect, useMemo, useState } from 'react'
 import { clienteService } from '../services/ClienteService'
 import { produtoService } from '../services/ProdutoService'
 import { vendaService } from '../services/VendaService'
-
 import type { Cliente } from '../types/Cliente'
 import type { Produto } from '../types/Produto'
-import type { Venda } from '../types/Venda'
 
 interface Props {
   onVendaCriada: () => void
@@ -15,189 +13,170 @@ interface Props {
 function VendaForm({ onVendaCriada }: Props) {
   const [clientes, setClientes] = useState<Cliente[]>([])
   const [produtos, setProdutos] = useState<Produto[]>([])
-
   const [clienteId, setClienteId] = useState('')
   const [produtoId, setProdutoId] = useState('')
   const [quantidade, setQuantidade] = useState('1')
-
-  const [carregando, setCarregando] = useState(false)
-  const [carregandoListas, setCarregandoListas] = useState(true)
-
+  const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState('')
   const [sucesso, setSucesso] = useState('')
 
   useEffect(() => {
-    const carregarListas = async () => {
+    async function carregarOpcoes() {
       try {
-        setCarregandoListas(true)
+        const [listaClientes, listaProdutos] = await Promise.all([
+          clienteService.listar(),
+          produtoService.listar()
+        ])
 
-        const [listaClientes, listaProdutos] =
-          await Promise.all([
-            clienteService.listar(),
-            produtoService.listar()
-          ])
-
-        setClientes(listaClientes)
-        setProdutos(listaProdutos)
-      } catch (error) {
-        console.error('Erro ao carregar listas:', error)
+        setClientes(Array.isArray(listaClientes) ? listaClientes : [])
+        setProdutos(Array.isArray(listaProdutos) ? listaProdutos : [])
+      } catch {
         setErro('Não foi possível carregar clientes e produtos.')
-      } finally {
-        setCarregandoListas(false)
       }
     }
 
-    carregarListas()
+    carregarOpcoes()
   }, [])
 
-  const realizarVenda = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault()
+  const produtoSelecionado = produtos.find(
+    produto => String(produto.id) === produtoId
+  )
 
+  const total = useMemo(() => {
+    return (produtoSelecionado?.preco ?? 0) * Number(quantidade || 0)
+  }, [produtoSelecionado, quantidade])
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
     setErro('')
     setSucesso('')
 
-    const idCliente = Number(clienteId)
-    const idProduto = Number(produtoId)
-    const qtd = Number(quantidade)
-
-    if (!idCliente || !idProduto || qtd <= 0 || !Number.isInteger(qtd)) {
-      setErro('Selecione um cliente, um produto e uma quantidade inteira válida.')
+    if (!clienteId || !produtoId) {
+      setErro('Selecione um cliente e um produto.')
       return
     }
 
+    const qtd = Number(quantidade)
+
+    if (!Number.isInteger(qtd) || qtd < 1) {
+      setErro('Informe uma quantidade inteira maior que zero.')
+      return
+    }
+
+    setLoading(true)
+
     try {
-      setCarregando(true)
-
-      const venda: Omit<Venda, 'id' | 'valor_total' | 'data_venda'> = {
-        clienteId: idCliente,
-        produtoId: idProduto,
+      await vendaService.realizarVenda({
+        clienteId: Number(clienteId),
+        produtoId: Number(produtoId),
         quantidade: qtd
-      }
+      })
 
-      const resposta = await vendaService.realizarVenda(venda)
-
-      setSucesso(
-        `Venda realizada com sucesso! Valor total: ${Number(
-          resposta.valor_total
-        ).toLocaleString('pt-BR', {
-          style: 'currency',
-          currency: 'BRL'
-        })}`
-      )
-
+      setSucesso('Venda registrada com sucesso!')
       setClienteId('')
       setProdutoId('')
       setQuantidade('1')
-
       onVendaCriada()
     } catch (error: any) {
-      console.error('Erro ao realizar venda:', error)
-
       setErro(
         error?.response?.data?.message ||
-        error?.response?.data?.mensagem ||
         error?.response?.data?.title ||
-        'Não foi possível realizar a venda. Verifique os dados e tente novamente.'
+        'Não foi possível registrar a venda. Verifique os dados e o estoque.'
       )
     } finally {
-      setCarregando(false)
+      setLoading(false)
     }
   }
 
   return (
-    <form className="app-form" onSubmit={realizarVenda}>
-      <h2>Registrar venda</h2>
-
-      {erro && (
-        <div className="form-error" role="alert">
-          {erro}
+    <section className="sales-card">
+      <div className="sales-card-header">
+        <div>
+          <span className="sales-eyebrow">OPERAÇÃO</span>
+          <h2>Registrar venda</h2>
+          <p>Preencha os dados para realizar uma nova venda.</p>
         </div>
-      )}
+        <span className="sales-step">01 / NOVA</span>
+      </div>
 
-      {sucesso && (
-        <div className="form-success" role="status">
-          {sucesso}
-        </div>
-      )}
-
-      {carregandoListas ? (
-        <p className="list-status">
-          Carregando clientes e produtos...
-        </p>
-      ) : (
-        <>
-          <div className="form-group">
-            <label htmlFor="clienteId">Cliente</label>
-
-            <select
-              id="clienteId"
-              value={clienteId}
-              onChange={(event) => setClienteId(event.target.value)}
-              required
-              disabled={carregando}
-            >
-              <option value="">Selecione um cliente</option>
-
-              {clientes.map((cliente) => (
-                <option key={cliente.id} value={cliente.id}>
-                  {cliente.nome}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="produtoId">Produto</label>
-
-            <select
-              id="produtoId"
-              value={produtoId}
-              onChange={(event) => setProdutoId(event.target.value)}
-              required
-              disabled={carregando}
-            >
-              <option value="">Selecione um produto</option>
-
-              {produtos.map((produto) => (
-                <option
-                  key={produto.id}
-                  value={produto.id}
-                  disabled={produto.ativo === false}
-                >
-                  {produto.nome} — R${' '}
-                  {Number(produto.preco).toFixed(2)}
-                  {produto.ativo === false ? ' (Inativo)' : ''}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="quantidade">Quantidade</label>
-
-            <input
-              id="quantidade"
-              type="number"
-              min="1"
-              step="1"
-              value={quantidade}
-              onChange={(event) => setQuantidade(event.target.value)}
-              required
-              disabled={carregando}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={carregando || clientes.length === 0 || produtos.length === 0}
+      <form className="sales-form" onSubmit={handleSubmit}>
+        <div className="sales-field">
+          <label htmlFor="venda-cliente">Cliente</label>
+          <select
+            id="venda-cliente"
+            value={clienteId}
+            onChange={e => setClienteId(e.target.value)}
+            required
           >
-            {carregando ? 'Registrando venda...' : 'Realizar venda'}
-          </button>
-        </>
-      )}
-    </form>
+            <option value="">Selecione um cliente</option>
+            {clientes.map(cliente => (
+              <option key={cliente.id} value={cliente.id}>
+                {cliente.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="sales-field">
+          <label htmlFor="venda-produto">Produto</label>
+          <select
+            id="venda-produto"
+            value={produtoId}
+            onChange={e => setProdutoId(e.target.value)}
+            required
+          >
+            <option value="">Selecione um produto</option>
+            {produtos.map(produto => (
+              <option key={produto.id} value={produto.id}>
+                {produto.nome} — {Number(produto.preco).toLocaleString(
+                  'pt-BR',
+                  { style: 'currency', currency: 'BRL' }
+                )}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="sales-field">
+          <label htmlFor="venda-quantidade">Quantidade</label>
+          <input
+            id="venda-quantidade"
+            type="number"
+            min="1"
+            step="1"
+            value={quantidade}
+            onChange={e => setQuantidade(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="sales-total">
+          <div>
+            <span>Valor total</span>
+            <small>
+              {produtoSelecionado
+                ? `${quantidade || 0} unidade(s) selecionada(s)`
+                : 'Selecione um produto'}
+            </small>
+          </div>
+          <strong>
+            {total.toLocaleString('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+            })}
+          </strong>
+        </div>
+
+        {erro && <p className="sales-message sales-error">{erro}</p>}
+        {sucesso && (
+          <p className="sales-message sales-success">{sucesso}</p>
+        )}
+
+        <button className="sales-submit" type="submit" disabled={loading}>
+          {loading ? 'Registrando venda...' : 'Confirmar venda'}
+        </button>
+      </form>
+    </section>
   )
 }
 

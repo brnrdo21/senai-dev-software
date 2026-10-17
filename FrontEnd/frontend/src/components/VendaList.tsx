@@ -1,93 +1,99 @@
+
 import type { Venda } from '../types/Venda'
-import { UsersIcon } from './Icon'
+import type { Cliente } from '../types/Cliente'
+import type { Produto } from '../types/Produto'
 
 interface Props {
   vendas: Venda[]
+  clientes: Cliente[]
+  produtos: Produto[]
   loading: boolean
 }
 
-function VendaList({
-  vendas,
-  loading
-}: Props) {
-
-  if (loading) {
-    return (
-      <div className="list-status">
-        Carregando vendas...
-      </div>
-    )
+function VendaList({ vendas, clientes, produtos, loading }: Props) {
+  function moeda(valor: number) {
+    return Number(valor).toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    })
   }
 
-  if (vendas.length === 0) {
-    return (
-      <div className="list-empty">
-        <div className="empty-icon">
-          <UsersIcon size={30} />
-        </div>
+  function dataFormatada(data: Date | string) {
+    const dataVenda = new Date(data)
 
-        <strong>
-          Nenhuma venda cadastrada
-        </strong>
+    if (Number.isNaN(dataVenda.getTime())) return '—'
 
-        <p>
-          Cadastre sua primeira venda.
-        </p>
-      </div>
-    )
+    return dataVenda.toLocaleDateString('pt-BR')
   }
 
   return (
-    <ul className="app-list">
-      {vendas.map((venda) => (
-        <li
-          className="app-list-item"
-          key={venda.id}
-        >
-          <div className="list-avatar cliente-avatar">
-            <UsersIcon size={19} />
-          </div>
+    <section className="sales-card sales-history">
+      <div className="sales-card-header">
+        <div>
+          <span className="sales-eyebrow">MOVIMENTAÇÕES</span>
+          <h2>Histórico de vendas</h2>
+          <p>Acompanhe as vendas registradas no sistema.</p>
+        </div>
 
-          <div className="list-info">
-            <strong>
-              Venda #{venda.id}
-            </strong>
+        <span className="sales-count">
+          {vendas.length} {vendas.length === 1 ? 'venda' : 'vendas'}
+        </span>
+      </div>
 
-            <span>
-              Cliente: {venda.clienteId}
-            </span>
+      {loading ? (
+        <div className="sales-empty">Carregando vendas...</div>
+      ) : vendas.length === 0 ? (
+        <div className="sales-empty">
+          <div className="sales-empty-mark">—</div>
+          <strong>Nenhuma venda registrada</strong>
+          <p>As vendas realizadas aparecerão aqui.</p>
+        </div>
+      ) : (
+        <div className="sales-table-wrapper">
+          <table className="sales-table">
+            <thead>
+              <tr>
+                <th>Venda</th>
+                <th>Cliente</th>
+                <th>Produto</th>
+                <th>Qtd.</th>
+                <th>Valor total</th>
+                <th>Data</th>
+              </tr>
+            </thead>
 
-            <span>
-              Produto: {venda.produtoId}
-            </span>
+            <tbody>
+              {vendas.map(venda => {
+                const cliente = clientes.find(
+                  item => item.id === venda.clienteId
+                )
 
-            <span>
-              Quantidade: {venda.quantidade}
-            </span>
+                const produto = produtos.find(
+                  item => item.id === venda.produtoId
+                )
 
-            <small>
-              Total: {Number(venda.valor_total).toLocaleString(
-                'pt-BR',
-                {
-                  style: 'currency',
-                  currency: 'BRL'
-                }
-              )}
-            </small>
-
-            <small>
-              Data: {new Date(venda.data_venda).toLocaleDateString(
-                'pt-BR'
-              )}
-            </small>
-          </div>
-
-          <span className="list-badge">
-            Venda
-          </span>
-        </li>
-      ))}
-    </ul>
+                return (
+                  <tr key={venda.id}>
+                    <td>
+                      <span className="sales-id">
+                        #{String(venda.id).padStart(3, '0')}
+                      </span>
+                    </td>
+                    <td>{cliente?.nome ?? `Cliente #${venda.clienteId}`}</td>
+                    <td>{produto?.nome ?? `Produto #${venda.produtoId}`}</td>
+                    <td>{venda.quantidade}</td>
+                    <td className="sales-value">
+                      {moeda(venda.valor_total)}
+                    </td>
+                    <td>{dataFormatada(venda.data_venda)}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
   )
 }
 

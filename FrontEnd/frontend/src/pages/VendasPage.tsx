@@ -1,92 +1,113 @@
-import { useEffect, useState } from 'react'
 
+import { useCallback, useEffect, useState } from 'react'
 import type { Venda } from '../types/Venda'
+import type { Cliente } from '../types/Cliente'
+import type { Produto } from '../types/Produto'
 import { vendaService } from '../services/VendaService'
-
+import { clienteService } from '../services/ClienteService'
+import { produtoService } from '../services/ProdutoService'
 import VendaForm from '../components/VendaForm'
 import VendaList from '../components/VendaList'
-import { UsersIcon } from '../components/Icon'
 
 function VendasPage() {
   const [vendas, setVendas] = useState<Venda[]>([])
-  const [loading, setLoading] = useState(false)
+  const [clientes, setClientes] = useState<Cliente[]>([])
+  const [produtos, setProdutos] = useState<Produto[]>([])
+  const [loading, setLoading] = useState(true)
+  const [erro, setErro] = useState('')
 
-  const carregarVendas = async () => {
+  const carregarDados = useCallback(async () => {
     setLoading(true)
+    setErro('')
 
     try {
-      const dados = await vendaService.listar()
-      setVendas(dados)
+      const [listaVendas, listaClientes, listaProdutos] = await Promise.all([
+        vendaService.listar(),
+        clienteService.listar(),
+        produtoService.listar()
+      ])
+
+      setVendas(Array.isArray(listaVendas) ? listaVendas : [])
+      setClientes(Array.isArray(listaClientes) ? listaClientes : [])
+      setProdutos(Array.isArray(listaProdutos) ? listaProdutos : [])
     } catch {
-      setVendas([])
+      setErro('Não foi possível carregar todos os dados. Verifique a conexão com a API.')
     } finally {
       setLoading(false)
     }
-  }
-
-  useEffect(() => {
-    carregarVendas()
   }, [])
 
+  useEffect(() => {
+    carregarDados()
+  }, [carregarDados])
+
+  const faturamento = vendas.reduce(
+    (total, venda) => total + Number(venda.valor_total || 0),
+    0
+  )
+
+  const unidadesVendidas = vendas.reduce(
+    (total, venda) => total + Number(venda.quantidade || 0),
+    0
+  )
+
   return (
-    <div className="page">
+    <main className="sales-page">
+      <header className="sales-page-heading">
+        <div>
+          <span className="sales-eyebrow">GESTÃO COMERCIAL</span>
+          <h1>Vendas</h1>
+          <p>Registre operações e acompanhe o desempenho das vendas.</p>
+        </div>
 
-      <header className="page-header">
-        <h1>Gestão de Vendas</h1>
-
-        <p>
-          Cadastre e visualize as vendas do sistema.
-        </p>
+        <button
+          className="sales-refresh"
+          type="button"
+          onClick={carregarDados}
+          disabled={loading}
+        >
+          {loading ? 'Atualizando...' : 'Atualizar dados'}
+        </button>
       </header>
 
-      <div className="content-grid">
+      {erro && <p className="sales-message sales-error">{erro}</p>}
 
-        {/* FORMULÁRIO */}
-        <section className="card">
+      <section className="sales-stats">
+        <article className="sales-stat-card">
+          <span>Vendas realizadas</span>
+          <strong>{vendas.length}</strong>
+          <small>Operações registradas</small>
+        </article>
 
-          <VendaForm
-            onVendaCriada={carregarVendas}
-          />
+        <article className="sales-stat-card">
+          <span>Faturamento registrado</span>
+          <strong>
+            {faturamento.toLocaleString('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+            })}
+          </strong>
+          <small>Soma dos valores das vendas</small>
+        </article>
 
-        </section>
+        <article className="sales-stat-card">
+          <span>Unidades vendidas</span>
+          <strong>{unidadesVendidas}</strong>
+          <small>Quantidade total de itens</small>
+        </article>
+      </section>
 
-        {/* LISTA */}
-        <section className="card">
+      <div className="sales-content-grid">
+        <VendaForm onVendaCriada={carregarDados} />
 
-          <div className="card-heading">
-
-            <div className="card-heading-left">
-
-              <div className="card-heading-icon cliente-heading-icon">
-                <UsersIcon size={19} />
-              </div>
-
-              <div>
-                <h2>Vendas cadastradas</h2>
-
-                <p>
-                  Lista de vendas
-                </p>
-              </div>
-
-            </div>
-
-            <div className="count-badge">
-              {vendas.length}
-            </div>
-
-          </div>
-
-          <VendaList
-            vendas={vendas}
-            loading={loading}
-          />
-
-        </section>
-
+        <VendaList
+          vendas={vendas}
+          clientes={clientes}
+          produtos={produtos}
+          loading={loading}
+        />
       </div>
-
-    </div>
+    </main>
   )
 }
 

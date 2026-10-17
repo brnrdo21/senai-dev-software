@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { clienteService } from '../services/ClienteService'
-import { UserPlusIcon } from './Icon'
 
 interface Props {
   onClienteCriado: () => void
