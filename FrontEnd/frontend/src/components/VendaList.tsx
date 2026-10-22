@@ -64,14 +64,13 @@ function VendaList({ vendas, clientes, produtos, loading }: Props) {
 
             <tbody>
               {vendas.map(venda => {
-                const cliente = clientes.find(
-                  item => item.id === venda.clienteId
+               const cliente = clientes.find(
+                item => String(item.id) === String(venda.clienteId)
                 )
 
                 const produto = produtos.find(
-                  item => item.id === venda.produtoId
+                item => String(item.id) === String(venda.produtoId)
                 )
-
                 return (
                   <tr key={venda.id}>
                     <td>

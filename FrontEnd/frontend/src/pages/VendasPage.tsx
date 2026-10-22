@@ -17,25 +17,73 @@ function VendasPage() {
   const [erro, setErro] = useState('')
 
   const carregarDados = useCallback(async () => {
-    setLoading(true)
-    setErro('')
+  setLoading(true)
+  setErro('')
 
-    try {
-      const [listaVendas, listaClientes, listaProdutos] = await Promise.all([
-        vendaService.listar(),
-        clienteService.listar(),
-        produtoService.listar()
-      ])
+  const erros: string[] = []
 
-      setVendas(Array.isArray(listaVendas) ? listaVendas : [])
-      setClientes(Array.isArray(listaClientes) ? listaClientes : [])
-      setProdutos(Array.isArray(listaProdutos) ? listaProdutos : [])
-    } catch {
-      setErro('Não foi possível carregar todos os dados. Verifique a conexão com a API.')
-    } finally {
-      setLoading(false)
+  try {
+    const resultados = await Promise.allSettled([
+      vendaService.listar(),
+      clienteService.listar(),
+      produtoService.listar()
+    ])
+
+    const [resultadoVendas, resultadoClientes, resultadoProdutos] =
+      resultados
+
+    if (resultadoVendas.status === 'fulfilled') {
+      const dados = resultadoVendas.value
+      if (Array.isArray(dados)) {
+        setVendas(dados)
+      } else {
+        setVendas([])
+        erros.push('Vendas: formato de resposta inválido.')
+      }
+    } else {
+      setVendas([])
+      erros.push('Vendas: falha ao consultar a API.')
+      console.error('Erro ao carregar vendas:', resultadoVendas.reason)
     }
-  }, [])
+
+    if (resultadoClientes.status === 'fulfilled') {
+      const dados = resultadoClientes.value
+      if (Array.isArray(dados)) {
+        setClientes(dados)
+      } else {
+        setClientes([])
+        erros.push('Clientes: formato de resposta inválido.')
+      }
+    } else {
+      setClientes([])
+      erros.push('Clientes: falha ao consultar a API.')
+      console.error('Erro ao carregar clientes:', resultadoClientes.reason)
+    }
+
+    if (resultadoProdutos.status === 'fulfilled') {
+      const dados = resultadoProdutos.value
+      if (Array.isArray(dados)) {
+        setProdutos(dados)
+      } else {
+        setProdutos([])
+        erros.push('Produtos: formato de resposta inválido.')
+      }
+    } else {
+      setProdutos([])
+      erros.push('Produtos: falha ao consultar a API.')
+      console.error('Erro ao carregar produtos:', resultadoProdutos.reason)
+    }
+
+    if (erros.length > 0) {
+      setErro(erros.join(' '))
+    }
+  } catch (error) {
+    console.error('Erro ao carregar os dados:', error)
+    setErro('Ocorreu um erro inesperado ao carregar os dados.')
+  } finally {
+    setLoading(false)
+  }
+}, [])
 
   useEffect(() => {
     carregarDados()
@@ -55,7 +103,6 @@ function VendasPage() {
     <main className="sales-page">
       <header className="sales-page-heading">
         <div>
-          <span className="sales-eyebrow">GESTÃO COMERCIAL</span>
           <h1>Vendas</h1>
           <p>Registre operações e acompanhe o desempenho das vendas.</p>
         </div>

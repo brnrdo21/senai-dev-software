@@ -1,5 +1,5 @@
 /* =========================================
-   RESET E CONFIGURAÇÕES GERAIS
+   1. RESET E CONFIGURAÇÕES GERAIS
 ========================================= */
 
 * {
@@ -17,8 +17,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
+  --primary: #5749e8;
+  --primary-hover: #4538ce;
   --background: #f5f7fb;
   --surface: #ffffff;
   --text: #172033;
@@ -28,6 +28,11 @@
   --danger: #dc2626;
   --radius: 16px;
   --shadow: 0 8px 28px rgba(20, 35, 70, 0.06);
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
 }
 
 body {
@@ -57,8 +62,12 @@ a {
   text-decoration: none;
 }
 
+#root {
+  min-height: 100vh;
+}
+
 /* =========================================
-   ESTRUTURA PRINCIPAL
+   2. ESTRUTURA PRINCIPAL
 ========================================= */
 
 .app {
@@ -66,19 +75,30 @@ a {
 }
 
 .main-content {
+  width: calc(100% - 260px);
+  min-width: 0;
   min-height: 100vh;
   margin-left: 260px;
-  padding: 36px;
-  transition: margin-left 0.25s ease;
+  padding: 32px;
+  transition: margin-left 0.25s ease, width 0.25s ease;
 }
 
 .app.sidebar-collapsed .main-content {
+  width: calc(100% - 76px);
   margin-left: 76px;
 }
 
-/* =========================================
+.page-container,
+.sales-page {
+  width: 100%;
+  max-width: 1600px;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+/* ========================================
    SIDEBAR
-========================================= */
+======================================== */
 
 .sidebar {
   position: fixed;
@@ -88,38 +108,39 @@ a {
   flex-direction: column;
   width: 260px;
   height: 100vh;
-  padding: 24px 16px;
+  padding: 22px 16px;
   overflow-y: auto;
   color: #e8eaff;
   background: #151a2d;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
-  transition: width 0.25s ease;
+  border-right: 1px solid rgba(255,255,255,.06);
+  transition: width .25s ease;
 }
 
 .sidebar.collapsed {
   width: 76px;
 }
 
-.sidebar-header {
+.sidebar-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   min-height: 48px;
-  margin-bottom: 34px;
+  margin-bottom: 28px;
 }
 
-.sidebar-logo {
+.brand {
   display: flex;
+  flex: 1;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
   min-width: 0;
-  font-size: 18px;
-  font-weight: 750;
-  color: #ffffff;
+  padding: 0;
+  color: #fff;
+  background: transparent;
+  border: 0;
 }
 
-.sidebar-logo-icon {
+.brand-mark {
   display: grid;
   flex-shrink: 0;
   width: 42px;
@@ -130,20 +151,50 @@ a {
   border-radius: 13px;
 }
 
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.brand-text strong {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.brand-text span {
+  color: #9ba6c2;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
 .sidebar-toggle {
   display: grid;
+  flex-shrink: 0;
   width: 36px;
   height: 36px;
-  flex-shrink: 0;
   place-items: center;
   color: #d5d9eb;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255,255,255,.07);
   border: 0;
   border-radius: 10px;
 }
 
 .sidebar-toggle:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255,255,255,.14);
+}
+
+.sidebar-nav-area {
+  width: 100%;
+}
+
+.nav-title {
+  margin-bottom: 12px;
+  color: #858da8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
 }
 
 .sidebar-nav {
@@ -152,66 +203,119 @@ a {
   gap: 8px;
 }
 
-.sidebar-section-title {
-  margin: 0 0 12px 10px;
-  color: #858da8;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.4px;
-}
-
-.sidebar a,
-.sidebar .nav-link {
+.sidebar-link {
   display: flex;
   align-items: center;
-  gap: 13px;
-  min-height: 48px;
-  padding: 0 14px;
-  color: #aeb6ce;
+  gap: 12px;
+  min-height: 47px;
+  padding: 0 13px;
+  color: #b5bfd6;
+  text-decoration: none;
   border-radius: 12px;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background .2s, color .2s;
 }
 
-.sidebar a:hover,
-.sidebar .nav-link:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.07);
+.sidebar-link:hover {
+  color: #fff;
+  background: rgba(255,255,255,.07);
 }
 
-.sidebar a.active,
-.sidebar .nav-link.active {
-  color: #ffffff;
+.sidebar-link.active {
+  color: #fff;
   background: linear-gradient(110deg, #5147e5, #665cf0);
-  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.24);
+  box-shadow: 0 6px 18px rgba(79,70,229,.2);
 }
 
-.sidebar a svg,
-.sidebar .nav-link svg {
-  width: 20px;
-  height: 20px;
+.sidebar-link-icon {
+  display: grid;
   flex-shrink: 0;
+  width: 22px;
+  place-items: center;
 }
 
-.sidebar.collapsed .sidebar-logo span,
-.sidebar.collapsed .sidebar-section-title,
-.sidebar.collapsed .nav-link span,
-.sidebar.collapsed .sidebar-header > div:not(.sidebar-logo-icon) {
+.sidebar-link-text {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.sidebar-link-arrow {
+  margin-left: auto;
+  opacity: .65;
+}
+
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 6px;
+}
+
+.status-indicator {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(34,197,94,.35);
+}
+
+.system-status > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.system-status strong {
+  color: #fff;
+  font-size: 12px;
+}
+
+.system-status > div span {
+  color: #9ba6c2;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.sidebar-version {
+  padding: 0 6px;
+  color: #8993ad;
+  font-size: 11px;
+}
+
+.sidebar.collapsed .brand-text,
+.sidebar.collapsed .nav-title,
+.sidebar.collapsed .sidebar-link-text,
+.sidebar.collapsed .sidebar-link-arrow,
+.sidebar.collapsed .sidebar-bottom {
   display: none;
 }
 
-.sidebar.collapsed .sidebar-header {
+.sidebar.collapsed .sidebar-top {
   flex-direction: column;
-  align-items: center;
 }
 
-.sidebar.collapsed a,
-.sidebar.collapsed .nav-link {
+.sidebar.collapsed .sidebar-link {
   justify-content: center;
   padding: 0;
 }
 
+.sidebar.collapsed .sidebar-nav-area {
+  margin-top: 12px;
+}
+
+
 /* =========================================
-   CABEÇALHOS DAS PÁGINAS
+   4. CABEÇALHOS DAS PÁGINAS
 ========================================= */
 
 .page-header,
@@ -249,12 +353,16 @@ a {
 }
 
 /* =========================================
-   BOTÕES
+   5. BOTÕES GERAIS
 ========================================= */
 
 button,
 .btn {
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .btn-primary,
@@ -266,14 +374,16 @@ button,
   min-height: 46px;
   padding: 0 20px;
   color: #ffffff;
+  font-size: 14px;
   font-weight: 700;
   background: var(--primary);
-  border: 0;
+  border: none;
   border-radius: 11px;
 }
 
-.btn-primary:hover,
-.sales-submit:hover {
+.btn-primary:hover:not(:disabled),
+.sales-submit:hover:not(:disabled) {
+  color: #ffffff;
   background: var(--primary-hover);
   transform: translateY(-1px);
 }
@@ -292,13 +402,13 @@ button,
   border-radius: 11px;
 }
 
-.sales-refresh:hover {
+.sales-refresh:hover:not(:disabled) {
   background: #f0f2ff;
   border-color: #c9c7ff;
 }
 
 /* =========================================
-   CARDS E CONTEÚDO GERAL
+   6. CARDS
 ========================================= */
 
 .card,
@@ -346,12 +456,13 @@ button,
   color: var(--primary);
   font-size: 13px;
   font-weight: 800;
+  text-align: center;
   background: #eeedff;
   border-radius: 11px;
 }
 
 /* =========================================
-   GRIDS DE CADASTRO E LISTAGEM
+   7. GRIDS
 ========================================= */
 
 .content-grid {
@@ -367,23 +478,19 @@ button,
   gap: 24px;
 }
 
-.page-container,
-.sales-page {
-  width: 100%;
-  max-width: 1600px;
-  min-width: 0;
-  margin: 0 auto;
-}
-
 /* =========================================
-   FORMULÁRIOS
+   8. FORMULÁRIOS DE CLIENTES E PRODUTOS
 ========================================= */
 
 .form,
+.product-form,
+.app-form,
 .sales-form {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  width: 100%;
+  min-width: 0;
 }
 
 .form-row {
@@ -393,7 +500,8 @@ button,
 }
 
 .form-group,
-.sales-field {
+.form-field,
+.form-group-full {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -401,31 +509,41 @@ button,
 }
 
 .form-group label,
-.sales-field label {
-  color: #374151;
+.form-field label,
+.form-group-full label,
+.app-form .form-group label {
+  color: #344054;
   font-size: 12px;
-  font-weight: 750;
+  font-weight: 700;
 }
 
-.form-group input,
+.form-group input:not([type="checkbox"]),
 .form-group select,
 .form-group textarea,
-.sales-field input,
-.sales-field select,
-.sales-field textarea {
+.form-field input:not([type="checkbox"]),
+.form-field select,
+.form-field textarea,
+.form-group-full input:not([type="checkbox"]),
+.form-group-full select,
+.form-group-full textarea,
+.app-form .form-group input:not([type="checkbox"]),
+.app-form .form-group select,
+.app-form .form-group textarea {
   width: 100%;
-  min-height: 45px;
+  min-height: 46px;
   padding: 11px 13px;
   color: var(--text);
+  font-size: 14px;
   background: #ffffff;
-  border: 1px solid #dce2ec;
+  border: 1px solid #d8e0ed;
   border-radius: 10px;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group textarea,
-.sales-field textarea {
+.form-field textarea,
+.form-group-full textarea {
   min-height: 100px;
   resize: vertical;
 }
@@ -433,52 +551,260 @@ button,
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus,
-.sales-field input:focus,
-.sales-field select:focus,
-.sales-field textarea:focus {
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus,
+.form-group-full input:focus,
+.form-group-full select:focus,
+.form-group-full textarea:focus {
   border-color: #8c86ff;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 .form-group input::placeholder,
-.sales-field input::placeholder {
-  color: #a0a8b8;
+.form-field input::placeholder,
+.form-group-full input::placeholder {
+  color: #9aa5b8;
 }
 
-.form-submit {
-  width: 100%;
+/* Checkboxes */
+
+.form-group label:has(input[type="checkbox"]),
+.form-field label:has(input[type="checkbox"]),
+.product-form label:has(input[type="checkbox"]),
+.app-form .checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 9px;
+  width: fit-content;
+  color: #475467;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--primary);
 }
 
 /* =========================================
-   RESUMO DO TOTAL DA VENDA
+   9. BOTÕES DE CADASTRO
 ========================================= */
+
+/* Compatível com as classes utilizadas nos formulários */
+
+.form button[type="submit"],
+.product-form button[type="submit"],
+.app-form button[type="submit"],
+.sales-form button[type="submit"],
+.form-submit,
+.form-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 46px;
+  margin-top: 8px;
+  padding: 12px 18px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.12);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form button[type="submit"]:hover:not(:disabled),
+.product-form button[type="submit"]:hover:not(:disabled),
+.app-form button[type="submit"]:hover:not(:disabled),
+.sales-form button[type="submit"]:hover:not(:disabled),
+.form-submit:hover:not(:disabled),
+.form-button:hover:not(:disabled) {
+  color: #ffffff;
+  background: var(--primary-hover);
+  box-shadow: 0 6px 15px rgba(79, 70, 229, 0.2);
+  transform: translateY(-1px);
+}
+
+.form button[type="submit"]:disabled,
+.product-form button[type="submit"]:disabled,
+.app-form button[type="submit"]:disabled,
+.sales-form button[type="submit"]:disabled,
+.form-submit:disabled,
+.form-button:disabled {
+  color: #ffffff;
+  background: #a5a0e8;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* ========================================
+   FORMULÁRIO DE VENDAS
+======================================== */
+
+.sales-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
+}
+
+.sales-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sales-field label {
+  color: #374151;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.sales-field input,
+.sales-field select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 13px;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid #dce2ec;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.sales-field input:focus,
+.sales-field select:focus {
+  border-color: #8c86ff;
+  box-shadow: 0 0 0 3px rgba(79,70,229,.1);
+}
+
+/* Total da venda */
 
 .sales-total {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-top: 2px;
+  width: 100%;
+  min-width: 0;
   padding: 17px;
   background: #f5f5ff;
   border: 1px solid #e4e2ff;
   border-radius: 12px;
 }
 
-.sales-total span {
-  color: #555d78;
+.sales-total-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sales-total-info span {
+  color: #374151;
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 700;
+}
+
+.sales-total-info small {
+  color: #718096;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .sales-total strong {
+  flex-shrink: 0;
   color: var(--primary);
   font-size: 21px;
   font-weight: 800;
+  white-space: nowrap;
 }
 
+/* Botão de confirmar */
+
+.sales-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 18px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--primary);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+
+.sales-submit:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.sales-submit:disabled {
+  cursor: not-allowed;
+  opacity: .65;
+}
+
+/* Mensagens */
+
+.sales-message {
+  margin: 0;
+  padding: 13px 15px;
+  font-size: 13px;
+  line-height: 1.5;
+  border-radius: 10px;
+}
+
+.sales-error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.sales-success {
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+@media (max-width: 420px) {
+  .sales-total {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+
 /* =========================================
-   ESTATÍSTICAS DE VENDAS
+   11. ESTATÍSTICAS DO DASHBOARD DE VENDAS
 ========================================= */
 
 .sales-stats {
@@ -524,7 +850,7 @@ button,
 }
 
 /* =========================================
-   LISTAS E TABELAS
+   12. LISTAS DE CLIENTES E PRODUTOS
 ========================================= */
 
 .app-list {
@@ -619,12 +945,61 @@ button,
   height: 23px;
 }
 
-.list-info .sales-eyebrow {
-  margin-bottom: 0;
+/* =========================================
+   13. HISTÓRICO DE VENDAS
+========================================= */
+
+.sales-history {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.sales-history .sales-table-wrapper {
+  width: 100%;
+  margin-top: 18px;
+  overflow-x: auto;
+}
+
+.sales-history table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.sales-history th {
+  padding: 12px 14px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 750;
+  white-space: nowrap;
+  background: #f8faff;
+}
+
+.sales-history td {
+  padding: 14px;
+  color: #475569;
+  font-size: 13px;
+  white-space: nowrap;
+  border-bottom: 1px solid #edf0f7;
+}
+
+.sales-history tbody tr:hover {
+  background: #f8faff;
+}
+
+.sales-history th:first-child,
+.sales-history td:first-child {
+  padding-left: 18px;
+}
+
+.sales-history .sales-total {
+  color: var(--primary);
+  font-weight: 700;
 }
 
 /* =========================================
-   MENSAGENS DE STATUS
+   14. MENSAGENS DE STATUS
 ========================================= */
 
 .sales-message {
@@ -647,8 +1022,18 @@ button,
   border: 1px solid #bbf7d0;
 }
 
+.form-error {
+  padding: 12px 14px;
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.5;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+}
+
 /* =========================================
-   RESPONSIVIDADE PARA NOTEBOOKS E TABLETS
+   15. RESPONSIVIDADE — NOTEBOOKS E TABLETS
 ========================================= */
 
 @media (max-width: 1150px) {
@@ -657,7 +1042,7 @@ button,
   }
 
   .main-content {
-    padding: 28px;
+    padding: 26px;
   }
 }
 
@@ -673,15 +1058,24 @@ button,
   .sales-stat-card:last-child {
     grid-column: 1 / -1;
   }
+
+  .sales-history .sales-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .sales-history table {
+    min-width: 650px;
+  }
 }
 
 /* =========================================
-   RESPONSIVIDADE PARA CELULARES
+   16. RESPONSIVIDADE — CELULARES
 ========================================= */
 
 @media (max-width: 700px) {
   .sidebar {
     width: 220px;
+    padding: 18px 12px;
   }
 
   .sidebar.collapsed {
@@ -689,11 +1083,13 @@ button,
   }
 
   .main-content {
+    width: calc(100% - 220px);
     margin-left: 220px;
     padding: 22px 16px 32px;
   }
 
   .app.sidebar-collapsed .main-content {
+    width: calc(100% - 66px);
     margin-left: 66px;
   }
 
@@ -735,14 +1131,14 @@ button,
   }
 }
 
-@media (max-width: 480px) {
-  .main-content {
-    padding: 18px 12px 28px;
-  }
+/* =========================================
+   17. RESPONSIVIDADE — TELAS PEQUENAS
+========================================= */
 
+@media (max-width: 480px) {
   .sidebar {
     width: 190px;
-    padding: 18px 10px;
+    padding: 16px 10px;
   }
 
   .sidebar.collapsed {
@@ -750,10 +1146,13 @@ button,
   }
 
   .main-content {
+    width: calc(100% - 190px);
     margin-left: 190px;
+    padding: 18px 12px 28px;
   }
 
   .app.sidebar-collapsed .main-content {
+    width: calc(100% - 58px);
     margin-left: 58px;
   }
 
@@ -767,353 +1166,25 @@ button,
     padding: 16px 13px;
   }
 
-  .sales-total strong {
-    font-size: 18px;
-  }
-  
-/* =========================================
-   CORREÇÕES DO CADASTRO DE PRODUTOS
-========================================= */
-
-.form,
-.product-form,
-.sales-form {
+.sales-total-info {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-}
-
-.form-group,
-.form-field,
-.product-form .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   min-width: 0;
 }
 
-.form-group label,
-.form-field label {
-  color: #26334b;
+.sales-total-info span {
   font-size: 13px;
-  font-weight: 600;
-}
-
-.form-group input:not([type="checkbox"]),
-.form-group select,
-.form-field input,
-.form-field select {
-  width: 100%;
-  min-height: 45px;
-  padding: 0 13px;
-  color: #172033;
-  background: #fff;
-  border: 1px solid #d8e0ed;
-  border-radius: 10px;
-  outline: none;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-field input:focus,
-.form-field select:focus {
-  border-color: #6558ed;
-  box-shadow: 0 0 0 3px rgba(101, 88, 237, 0.12);
-}
-
-/* Linha com preço e estoque */
-.form-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-/* Checkbox e texto alinhados */
-.form-group label:has(input[type="checkbox"]),
-.form-field label:has(input[type="checkbox"]),
-.product-form label:has(input[type="checkbox"]) {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  color: #344054;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  margin: 0;
-  accent-color: #5b4ee8;
-}
-
-/* Botões dos formulários */
-.form button[type="submit"],
-.product-form button[type="submit"],
-.sales-form button[type="submit"],
-.form-submit {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 46px;
-  padding: 12px 18px;
-  color: #fff;
-  font-size: 14px;
   font-weight: 700;
-  background: #5749e8;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.form button[type="submit"]:hover,
-.product-form button[type="submit"]:hover,
-.sales-form button[type="submit"]:hover,
-.form-submit:hover {
-  background: #4538ce;
-}
-
-.form button[type="submit"]:disabled,
-.product-form button[type="submit"]:disabled,
-.sales-form button[type="submit"]:disabled {
-  cursor: not-allowed;
-  opacity: 0.65;
-}
-
-/* Espaçamento dos cards */
-.card,
-.sales-card {
-  min-width: 0;
-}
-
-.card-heading,
-.form-header {
-  margin-bottom: 22px;
-}
-
-/* =========================================
-   CORREÇÃO DO SIDEBAR
-========================================= */
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 28px;
-}
-
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sidebar-section-title {
-  margin: 0 0 10px;
-  color: #9ca8c1;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.sidebar a,
-.sidebar .nav-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 46px;
-  padding: 0 13px;
-  color: #c0c8dc;
-  border-radius: 11px;
-}
-
-.sidebar a span,
-.sidebar .nav-link span {
-  white-space: nowrap;
-}
-
-.sidebar a.active,
-.sidebar .nav-link.active {
-  color: #fff;
-  background: #5b4ee8;
-}
-
-/* =========================================
-   RESPONSIVIDADE
-========================================= */
-
-@media (max-width: 700px) {
-  .form-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .card,
-  .sales-card {
-    padding: 20px 16px;
-  }
-}
-
-/* =========================================
-   CORREÇÃO REAL DO FORMULÁRIO DE PRODUTOS
-========================================= */
-
-.app-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  width: 100%;
-  min-width: 0;
-}
-
-.app-form .form-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.app-form .form-header h2 {
-  margin: 0 0 5px;
-  color: #172033;
-  font-size: 17px;
-  font-weight: 750;
-}
-
-.app-form .form-header p {
-  margin: 0;
+.sales-total-info small {
   color: #718096;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-/* Campos */
-.app-form .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-}
-
-.app-form .form-group label {
-  color: #344054;
   font-size: 12px;
-  font-weight: 700;
 }
 
-.app-form .form-group input {
-  width: 100%;
-  height: 46px;
-  padding: 0 13px;
-  color: #172033;
-  font-size: 14px;
-  background: #fff;
-  border: 1px solid #d8e0ed;
-  border-radius: 10px;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.app-form .form-group input::placeholder {
-  color: #9aa5b8;
-}
-
-.app-form .form-group input:focus {
-  border-color: #6558ed;
-  box-shadow: 0 0 0 3px rgba(101, 88, 237, 0.12);
-}
-
-/* Preço e estoque */
-.app-form .form-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-/* Produto ativo */
-.app-form .checkbox-label {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  gap: 9px;
-  margin: 0;
-  color: #475467;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.app-form .checkbox-label input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  margin: 0;
-  accent-color: #5749e8;
-  cursor: pointer;
-}
-
-/* Botão cadastrar */
-.app-form .form-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 46px;
-  padding: 12px 18px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  background: #5749e8;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(87, 73, 232, 0.18);
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-
-.app-form .form-button:hover:not(:disabled) {
-  background: #4538ce;
-  transform: translateY(-1px);
-}
-
-.app-form .form-button:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-/* Erro */
-.app-form .form-error {
-  padding: 12px 14px;
-  color: #b91c1c;
-  font-size: 13px;
-  line-height: 1.5;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 9px;
-}
-
-/* Responsividade */
-@media (max-width: 700px) {
-  .app-form .form-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-.app-form .form-button {
-  background: red !important;
-  color: white !important;
-  width: 100% !important;
-  min-height: 48px !important;
-  border: none !important;
-  border-radius: 10px !important;
-  font-size: 16px !important;
+.sales-total strong {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 }

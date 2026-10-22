@@ -124,7 +124,7 @@ function ClienteForm({ onClienteCriado }: Props) {
       type="submit"
       disabled={loading}
     >
-      {loading ? 'Salvando...' : 'Cadastrar cliente'}
+      {loading ? 'Salvando...' : 'Confirmar cadastro'}
     </button>
 
   </form>

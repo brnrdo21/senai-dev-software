@@ -42,10 +42,7 @@ function ProdutoForm({ onProdutoCriado }: Props) {
   }
 
 return (
-  <form
-    className="app-form"
-    onSubmit={handleSubmit}
-  >
+  <form className="app-form" onSubmit={handleSubmit}>
 
     <div className="form-header">
       <div>
@@ -125,15 +122,14 @@ return (
       <span>Produto ativo</span>
     </label>
 
-    <button
-      className="form-button"
-      type="submit"
-      disabled={loading}
-    >
-      {loading ? 'Salvando...' : 'Cadastrar produto'}
-    </button>
-
-  </form>
+     <button
+    className="form-button"
+    type="submit"
+    disabled={loading}
+  >
+    {loading ? 'Salvando...' : 'Confirmar cadastro'}
+  </button>
+</form>
 )
 }
 export default ProdutoForm

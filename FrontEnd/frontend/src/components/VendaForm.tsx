@@ -96,7 +96,6 @@ function VendaForm({ onVendaCriada }: Props) {
           <h2>Registrar venda</h2>
           <p>Preencha os dados para realizar uma nova venda.</p>
         </div>
-        <span className="sales-step">01 / NOVA</span>
       </div>
 
       <form className="sales-form" onSubmit={handleSubmit}>
@@ -149,16 +148,19 @@ function VendaForm({ onVendaCriada }: Props) {
             required
           />
         </div>
-
+        
+ 
         <div className="sales-total">
-          <div>
-            <span>Valor total</span>
+          <div className="sales-total-info">
+            <span>Valor total da venda</span>
+
             <small>
               {produtoSelecionado
-                ? `${quantidade || 0} unidade(s) selecionada(s)`
-                : 'Selecione um produto'}
+                ? `${Number(quantidade) || 0} unidade(s) de ${produtoSelecionado.nome}`
+                : 'Selecione um produto para calcular'}
             </small>
           </div>
+
           <strong>
             {total.toLocaleString('pt-BR', {
               style: 'currency',

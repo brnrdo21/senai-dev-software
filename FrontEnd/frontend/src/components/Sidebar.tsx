@@ -14,61 +14,60 @@ interface SidebarProps {
 
 function Sidebar({
   collapsed,
-  setCollapsed
+  setCollapsed,
 }: SidebarProps) {
   return (
-    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
-
+    <aside
+      className={`sidebar ${collapsed ? 'collapsed' : ''}`}
+    >
+      {/* Cabeçalho */}
       <div className="sidebar-top">
-
-        <div className="brand">
-
+        <NavLink to="/vendas" className="brand">
           <div className="brand-mark">
-            <PackageIcon size={20} />
+            <PackageIcon size={21} />
           </div>
 
           {!collapsed && (
             <div className="brand-text">
               <strong>Meu App</strong>
-              <span>Dashboard</span>
+              <span>Gestão de cadastros e vendas</span>
             </div>
           )}
-
-        </div>
+        </NavLink>
 
         <button
           type="button"
           className="sidebar-toggle"
           onClick={() => setCollapsed(!collapsed)}
           title={collapsed ? 'Abrir menu' : 'Recolher menu'}
+          aria-label={collapsed ? 'Abrir menu' : 'Recolher menu'}
         >
-          {collapsed
-            ? <MenuIcon size={18} />
-            : <XIcon size={18} />
-          }
+          {collapsed ? (
+            <MenuIcon size={19} />
+          ) : (
+            <XIcon size={19} />
+          )}
         </button>
-
       </div>
 
+      {/* Navegação */}
       <div className="sidebar-nav-area">
-
         {!collapsed && (
           <div className="nav-title">
-            NAVEGAÇÃO
+            MENU PRINCIPAL
           </div>
         )}
 
         <nav className="sidebar-nav">
-
-          {/* Produtos */}
           <NavLink
             to="/produtos"
+            title={collapsed ? 'Produtos' : undefined}
             className={({ isActive }) =>
               `sidebar-link ${isActive ? 'active' : ''}`
             }
           >
             <span className="sidebar-link-icon">
-              <PackageIcon size={19} />
+              <PackageIcon size={20} />
             </span>
 
             {!collapsed && (
@@ -76,7 +75,6 @@ function Sidebar({
                 <span className="sidebar-link-text">
                   Produtos
                 </span>
-
                 <span className="sidebar-link-arrow">
                   →
                 </span>
@@ -84,15 +82,15 @@ function Sidebar({
             )}
           </NavLink>
 
-          {/* Clientes */}
           <NavLink
             to="/clientes"
+            title={collapsed ? 'Clientes' : undefined}
             className={({ isActive }) =>
               `sidebar-link ${isActive ? 'active' : ''}`
             }
           >
             <span className="sidebar-link-icon">
-              <UsersIcon size={19} />
+              <UsersIcon size={20} />
             </span>
 
             {!collapsed && (
@@ -100,7 +98,6 @@ function Sidebar({
                 <span className="sidebar-link-text">
                   Clientes
                 </span>
-
                 <span className="sidebar-link-arrow">
                   →
                 </span>
@@ -108,40 +105,49 @@ function Sidebar({
             )}
           </NavLink>
 
-          {/* Vendas */}
-       <NavLink
-     to="/vendas"
-     className={({ isActive }) =>
-      isActive ? 'sidebar-link active' : 'sidebar-link'
-      }
-    >
-          <span>↗</span>
-          {!collapsed && <span>Vendas</span>}
+          <NavLink
+            to="/vendas"
+            title={collapsed ? 'Vendas' : undefined}
+            className={({ isActive }) =>
+              `sidebar-link ${isActive ? 'active' : ''}`
+            }
+          >
+            <span className="sidebar-link-icon">
+              <span className="sales-nav-icon">↗</span>
+            </span>
+
+            {!collapsed && (
+              <>
+                <span className="sidebar-link-text">
+                  Vendas
+                </span>
+                <span className="sidebar-link-arrow">
+                  →
+                </span>
+              </>
+            )}
           </NavLink>
-
         </nav>
-
       </div>
 
+      {/* Rodapé */}
       {!collapsed && (
         <div className="sidebar-bottom">
-
           <div className="system-status">
-            <span className="status-indicator"></span>
+            <span className="status-indicator" />
 
-            <div>
-              <strong>Online</strong>
-              <span>Sistema funcionando</span>
+            <div className="system-status-text">
+              <strong>Sistema online</strong>
+              <span>Funcionando normalmente</span>
             </div>
           </div>
 
           <div className="sidebar-version">
-            v1.0.0
+            <span>Meu App</span>
+            <span>v1.0.0</span>
           </div>
-
         </div>
       )}
-
     </aside>
   )
 }
