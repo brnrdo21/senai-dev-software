@@ -1,5 +1,8 @@
 using MinhaApi.Repository;
 using MinhaApi.Services;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
@@ -44,7 +47,33 @@ DepartamentosRepository>();
 builder.Services.AddScoped<IDepartamentosService,
 DepartamentosService>();
 
+var jwtKey = builder.Configuration["Jwt:Key"]!;
+
+builder.Services
+  .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+  .AddJwtBearer(opt => {
+    opt.TokenValidationParameters = new TokenValidationParameters {
+      ValidateIssuerSigningKey = true,
+      IssuerSigningKey = new SymmetricSecurityKey(
+          Encoding.UTF8.GetBytes(jwtKey)),
+      ValidateIssuer   = true,
+      ValidIssuer      = builder.Configuration["Jwt:Issuer"],
+      ValidateAudience = true,
+      ValidAudience    = builder.Configuration["Jwt:Audience"],
+      ValidateLifetime = true
+    };
+  });
+
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 var app = builder.Build();
+
+app.UseCors(/* sua política */);
+app.UseAuthentication();  // 1º quem é você?
+app.UseAuthorization();   // 2º você pode entrar?
+app.MapControllers();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
