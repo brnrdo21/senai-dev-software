@@ -20,7 +20,7 @@ function VendasPage() {
   setLoading(true)
   setErro('')
 
-  const erros: string[] = []
+ const erros: string[] = []
 
   try {
     const resultados = await Promise.allSettled([

@@ -3,7 +3,7 @@ import type { LoginRequest, LoginResponse } from '../types/Auth'
 
 export const authService = {
   login: async (req: LoginRequest): Promise<LoginResponse> => {
-    const { data } = await api.post('/auth/login', req)
+    const { data } = await api.post('/Auth/login', req)
     return data
   }
 }

@@ -1,50 +1,109 @@
-import { useState } from 'react'
-import { useNavigate, Navigate } from 'react-router-dom'
+
+import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { authService } from '../services/AuthService'
 
 function LoginPage() {
-  const [email, setEmail]     = useState('')
-  const [senha, setSenha]     = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
+  const [erro, setErro] = useState('')
   const [loading, setLoading] = useState(false)
-  const [erro, setErro]       = useState<string | null>(null)
-  const { login, isAuthenticated } = useAuth()
+
+  const { login } = useAuth()
   const navigate = useNavigate()
 
-  // Já logado? Não precisa ver o login
-  if (isAuthenticated) return <Navigate to="/produtos" replace />
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setErro(null)
+    setErro('')
+    setLoading(true)
+
     try {
-      setLoading(true)
-      const resp = await authService.login({ email, senha })
-      login(resp)
+      const resposta = await authService.login({ email, senha })
+      login(resposta)
       navigate('/produtos')
     } catch {
-      setErro('E-mail ou senha incorretos.')
+      setErro('E-mail ou senha inválidos.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div style={{ maxWidth: 360, margin: '80px auto' }}>
-      <h1>🔐 Entrar</h1>
-      {erro && <p style={{ color: 'red' }}>{erro}</p>}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">E-mail</label>
-        <input id="email" type="email" value={email}
-          onChange={e => setEmail(e.target.value)} required />
-        <label htmlFor="senha">Senha</label>
-        <input id="senha" type="password" value={senha}
-          onChange={e => setSenha(e.target.value)} required />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
-      </form>
-    </div>
+    <main className="login-page">
+      <aside className="login-sidebar">
+        <div className="login-logo">
+          <span>M</span>
+          <strong>Meu App</strong>
+        </div>
+
+        <div className="login-decoration" />
+        <div className="login-decoration login-decoration-bottom" />
+        <div className="login-line">
+          <span />
+        </div>
+      </aside>
+
+      <section className="login-main">
+        <form className="login-card" onSubmit={handleSubmit}>
+          <div className="login-icon">M</div>
+
+          <div className="login-field">
+            <label htmlFor="email">E-mail</label>
+            <div className="login-input">
+              <span aria-hidden="true">✉</span>
+              <input
+                id="email"
+                type="email"
+                placeholder="Digite seu e-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="login-field">
+            <label htmlFor="senha">Senha</label>
+            <div className="login-input">
+              <span aria-hidden="true">♙</span>
+              <input
+                id="senha"
+                type={mostrarSenha ? 'text' : 'password'}
+                placeholder="Digite sua senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+
+              <button
+                type="button"
+                className="login-toggle"
+                onClick={() => setMostrarSenha(!mostrarSenha)}
+                aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+              >
+                {mostrarSenha ? 'Ocultar' : 'Mostrar'}
+              </button>
+            </div>
+          </div>
+
+          {erro && <p className="login-error">{erro}</p>}
+
+          <button
+            type="submit"
+            className="login-submit"
+            disabled={loading}
+          >
+            {loading ? 'Entrando...' : 'Entrar'}
+            {!loading && <span>→</span>}
+          </button>
+        </form>
+      </section>
+    </main>
   )
 }
+
 export default LoginPage

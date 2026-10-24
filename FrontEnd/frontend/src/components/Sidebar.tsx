@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 import {
   MenuIcon,
@@ -12,14 +13,13 @@ interface SidebarProps {
   setCollapsed: (value: boolean) => void
 }
 
-function Sidebar({
-  collapsed,
-  setCollapsed,
-}: SidebarProps) {
+function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
+  // Dados do usuário logado e função para sair
+  const { user, logout } = useAuth()
+
   return (
-    <aside
-      className={`sidebar ${collapsed ? 'collapsed' : ''}`}
-    >
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+
       {/* Cabeçalho */}
       <div className="sidebar-top">
         <NavLink to="/vendas" className="brand">
@@ -72,12 +72,8 @@ function Sidebar({
 
             {!collapsed && (
               <>
-                <span className="sidebar-link-text">
-                  Produtos
-                </span>
-                <span className="sidebar-link-arrow">
-                  →
-                </span>
+                <span className="sidebar-link-text">Produtos</span>
+                <span className="sidebar-link-arrow">→</span>
               </>
             )}
           </NavLink>
@@ -95,12 +91,8 @@ function Sidebar({
 
             {!collapsed && (
               <>
-                <span className="sidebar-link-text">
-                  Clientes
-                </span>
-                <span className="sidebar-link-arrow">
-                  →
-                </span>
+                <span className="sidebar-link-text">Clientes</span>
+                <span className="sidebar-link-arrow">→</span>
               </>
             )}
           </NavLink>
@@ -118,36 +110,48 @@ function Sidebar({
 
             {!collapsed && (
               <>
-                <span className="sidebar-link-text">
-                  Vendas
-                </span>
-                <span className="sidebar-link-arrow">
-                  →
-                </span>
+                <span className="sidebar-link-text">Vendas</span>
+                <span className="sidebar-link-arrow">→</span>
               </>
             )}
           </NavLink>
         </nav>
       </div>
 
-      {/* Rodapé */}
-      {!collapsed && (
-        <div className="sidebar-bottom">
-          <div className="system-status">
-            <span className="status-indicator" />
+      {/* Rodapé com usuário e opção de sair */}
+      <div className="sidebar-bottom">
 
-            <div className="system-status-text">
-              <strong>Sistema online</strong>
-              <span>Funcionando normalmente</span>
+        {!collapsed && (
+          <>
+            <div className="system-status">
+              <span className="status-indicator" />
+
+              <div className="system-status-text">
+                <strong>Sistema online</strong>
+                <span>Funcionando normalmente</span>
+              </div>
             </div>
-          </div>
 
-          <div className="sidebar-version">
-            <span>Meu App</span>
-            <span>v1.0.0</span>
-          </div>
-        </div>
-      )}
+            <div className="sidebar-user">
+              <p>👤 {user?.nome ?? 'Usuário'}</p>
+
+              <button
+                type="button"
+                className="sidebar-logout"
+                onClick={logout}
+              >
+                🚪 Sair
+              </button>
+            </div>
+
+            <div className="sidebar-version">
+              <span>Meu App</span>
+              <span>v1.0.0</span>
+            </div>
+          </>
+        )}
+
+      </div>
     </aside>
   )
 }

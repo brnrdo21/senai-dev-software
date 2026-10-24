@@ -55,11 +55,11 @@ builder.Services
     opt.TokenValidationParameters = new TokenValidationParameters {
       ValidateIssuerSigningKey = true,
       IssuerSigningKey = new SymmetricSecurityKey(
-          Encoding.UTF8.GetBytes(jwtKey)),
-      ValidateIssuer   = true,
-      ValidIssuer      = builder.Configuration["Jwt:Issuer"],
+      Encoding.UTF8.GetBytes(jwtKey)),
+      ValidateIssuer = true,
+      ValidIssuer = builder.Configuration["Jwt:Issuer"],
       ValidateAudience = true,
-      ValidAudience    = builder.Configuration["Jwt:Audience"],
+      ValidAudience = builder.Configuration["Jwt:Audience"],
       ValidateLifetime = true
     };
   });
@@ -69,7 +69,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
-app.UseCors(/* sua política */);
+Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("123456"));
+
+
+app.UseCors("FrontendPolicy");
 app.UseAuthentication();  // 1º quem é você?
 app.UseAuthorization();   // 2º você pode entrar?
 app.MapControllers();
@@ -82,6 +85,4 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("FrontendPolicy");
-app.MapControllers();
 app.Run();

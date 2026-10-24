@@ -1,4 +1,3 @@
-// Espelha os DTOs do backend (em camelCase)
 export interface LoginRequest {
   email: string
   senha: string
@@ -9,3 +8,5 @@ export interface LoginResponse {
   nome: string
   email: string
 }
+
+export type AuthUser = LoginResponse
