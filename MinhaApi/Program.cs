@@ -69,9 +69,6 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
-Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("123456"));
-
-
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();  // 1º quem é você?
 app.UseAuthorization();   // 2º você pode entrar?

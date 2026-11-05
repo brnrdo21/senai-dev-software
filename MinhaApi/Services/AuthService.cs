@@ -1,70 +1,183 @@
+
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 public class AuthService : IAuthService
 {
     private readonly IUsuarioRepository _repo;
     private readonly IConfiguration _config;
+    private readonly ILogger<AuthService> _logger;
 
-    public AuthService(IUsuarioRepository repo, IConfiguration config)
+    public AuthService(
+        IUsuarioRepository repo,
+        IConfiguration config,
+        ILogger<AuthService> logger)
     {
         _repo = repo;
         _config = config;
+        _logger = logger;
     }
 
     public LoginResponse Login(LoginRequest req)
+
     {
-        // 1. Busca o usuário ativo pelo e-mail
-        var usuario = _repo.BuscarPorEmail(req.Email)
-            ?? throw new UnauthorizedAccessException("Credenciais inválidas.");
+        
+        if (req == null ||
+            string.IsNullOrWhiteSpace(req.Email) ||
+            string.IsNullOrWhiteSpace(req.Senha))
+        {
+            throw new UnauthorizedAccessException(
+                "Credenciais inválidas.");
+        }
 
-        // 2. Compara a senha digitada com o hash do banco
-        bool senhaOk = BCrypt.Net.BCrypt.Verify(req.Senha, usuario.SenhaHash);
+        // 1. Busca o usuário pelo e-mail
+        var usuario = _repo.BuscarPorEmail(req.Email.Trim());
+
+        if (usuario == null)
+        {
+            throw new UnauthorizedAccessException(
+                "Credenciais inválidas.");
+        }
+
+        // 2. Verifica se existe hash de senha
+        if (string.IsNullOrWhiteSpace(usuario.SenhaHash))
+        {
+            _logger.LogError(
+                "O usuário {Email} não possui hash de senha cadastrado.",
+                usuario.Email);
+
+            throw new InvalidOperationException(
+                "Hash de senha não encontrado.");
+        }
+
+        // 3. Verifica a senha
+        bool senhaOk;
+
+        try
+        {
+            senhaOk = BCrypt.Net.BCrypt.Verify(
+                req.Senha,
+                usuario.SenhaHash);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Erro ao verificar o hash da senha do usuário {Email}.",
+                usuario.Email);
+
+            throw new InvalidOperationException(
+                "Não foi possível verificar a senha.");
+        }
+
         if (!senhaOk)
-            throw new UnauthorizedAccessException("Credenciais inválidas.");
+        {
+            throw new UnauthorizedAccessException(
+                "Credenciais inválidas.");
+        }
 
-        // 3. Gera o token e monta a resposta
+        // 4. Gera o token JWT
+        string token = GerarToken(usuario);
+
+        // 5. Retorna os dados do usuário
         return new LoginResponse
         {
-            Token = GerarToken(usuario),
-            Nome  = usuario.Nome,
+            Token = token,
+            Nome = usuario.Nome,
             Email = usuario.Email
         };
     }
-    // GerarToken → próximo slide
-       private string GerarToken(Usuario u)
+
+    private string GerarToken(Usuario usuario)
     {
-        // 1. Chave secreta em bytes
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+        // Busca as configurações JWT
+        string? chave = _config["Jwt:Key"];
+        string? issuer = _config["Jwt:Issuer"];
+        string? audience = _config["Jwt:Audience"];
+        string? expiracaoConfig = _config["Jwt:ExpiresInMinutes"];
 
-        // 2. Algoritmo da assinatura: HMAC-SHA256
-        var creds = new SigningCredentials(
-            key, SecurityAlgorithms.HmacSha256);
+        // Verifica se as configurações existem
+        if (string.IsNullOrWhiteSpace(chave))
+        {
+            throw new InvalidOperationException(
+                "Jwt:Key não foi configurada.");
+        }
 
-        // 3. Claims: o que vai no Payload
+        if (string.IsNullOrWhiteSpace(issuer))
+        {
+            throw new InvalidOperationException(
+                "Jwt:Issuer não foi configurado.");
+        }
+
+        if (string.IsNullOrWhiteSpace(audience))
+        {
+            throw new InvalidOperationException(
+                "Jwt:Audience não foi configurado.");
+        }
+
+        // Verifica se a chave possui tamanho adequado
+        byte[] chaveBytes = Encoding.UTF8.GetBytes(chave);
+
+        if (chaveBytes.Length < 32)
+        {
+            throw new InvalidOperationException(
+                "A chave JWT precisa ter pelo menos 32 bytes.");
+        }
+
+        // Verifica a expiração
+        if (!double.TryParse(
+            expiracaoConfig,
+            NumberStyles.Number,
+            CultureInfo.InvariantCulture,
+            out double minutos) || minutos <= 0)
+        {
+            throw new InvalidOperationException(
+                "Jwt:ExpiresInMinutes está ausente ou inválido.");
+        }
+
+        // Cria a chave de assinatura
+        var key = new SymmetricSecurityKey(chaveBytes);
+
+        // Define o algoritmo de assinatura
+        var credentials = new SigningCredentials(
+            key,
+            SecurityAlgorithms.HmacSha256);
+
+        // Define as informações do usuário
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, u.Id.ToString()),
-            new Claim(ClaimTypes.Name,  u.Nome),
-            new Claim(ClaimTypes.Email, u.Email)
+            new Claim(
+                ClaimTypes.NameIdentifier,
+                usuario.Id.ToString()),
+
+            new Claim(
+                ClaimTypes.Name,
+                usuario.Nome ?? string.Empty),
+
+            new Claim(
+                ClaimTypes.Email,
+                usuario.Email ?? string.Empty)
         };
 
-        // 4. Expiração lida do appsettings
-        var expira = DateTime.UtcNow.AddMinutes(
-            double.Parse(_config["Jwt:ExpiresInMinutes"]!));
+        // Define a validade do token
+        var expiracao = DateTime.UtcNow.AddMinutes(minutos);
 
-        // 5. Monta o token
+        // Monta o token
         var token = new JwtSecurityToken(
-            issuer:   _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims:   claims,
-            expires:  expira,
-            signingCredentials: creds);
+            issuer: issuer,
+            audience: audience,
+            claims: claims,
+            expires: expiracao,
+            signingCredentials: credentials
+        );
 
-        // 6. Converte para a string "xxx.yyy.zzz"
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        // Converte para string
+        return new JwtSecurityTokenHandler()
+            .WriteToken(token);
     }
-} // fim da classe AuthService
+}
