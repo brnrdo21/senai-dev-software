@@ -47,16 +47,14 @@ public class AuthService : IAuthService
         // 2. Verifica se existe hash de senha
         if (string.IsNullOrWhiteSpace(usuario.SenhaHash))
         {
-            _logger.LogError(
-                "O usuário {Email} não possui hash de senha cadastrado.",
+            _logger.LogError( "O usuário {Email} não possui hash de senha cadastrado.",
                 usuario.Email);
 
-            throw new InvalidOperationException(
-                "Hash de senha não encontrado.");
+            throw new InvalidOperationException("Hash de senha não encontrado.");
         }
 
         // 3. Verifica a senha
-        bool senhaOk;
+        /*bool senhaOk;
 
         try
         {
@@ -79,7 +77,26 @@ public class AuthService : IAuthService
         {
             throw new UnauthorizedAccessException(
                 "Credenciais inválidas.");
-        }
+        }*/
+        bool senhaOk = false;
+
+try
+{
+    senhaOk = usuario.SenhaHash.Length == 60 &&
+              BCrypt.Net.BCrypt.Verify(
+                  req.Senha,
+                  usuario.SenhaHash);
+}
+catch (Exception ex)
+{
+    _logger.LogError(ex, "Erro na validação BCrypt.");
+}
+
+_logger.LogWarning(
+    "DEBUG LOGIN: Hash tamanho = {Tamanho}; Senha válida = {Valida}",
+    usuario.SenhaHash.Length,
+    senhaOk
+);
 
         // 4. Gera o token JWT
         string token = GerarToken(usuario);

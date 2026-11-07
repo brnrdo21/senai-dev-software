@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Sidebar from './components/Sidebar'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -11,6 +10,8 @@ import ClientesPage from './pages/ClientesPage'
 import VendasPage from './pages/VendasPage'
 
 function Layout() {
+  const location = useLocation()
+  const estaNoLogin = location.pathname === '/login'
   const { isAuthenticated } = useAuth()
   const [collapsed, setCollapsed] = useState(false)
 
@@ -23,7 +24,7 @@ function Layout() {
         />
       )}
 
-      <main style={{ flex: 1, minWidth: 0, padding: '24px' }}>
+      <main style={{ flex: 1,minWidth: 0, padding: estaNoLogin ? 0 : '24px'}}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 

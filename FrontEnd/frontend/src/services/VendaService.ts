@@ -9,13 +9,13 @@ export interface NovaVenda {
 
 export const vendaService = {
  listar: async (): Promise<Venda[]> => {
-  const { data } = await api.get('/api/Venda')
+  const { data } = await api.get('/Venda')
 
   const lista = Array.isArray(data)
     ? data
     : Array.isArray(data?.$values)
-      ? data.$values
-      : null
+    ? data.$values
+    : null
 
   if (!lista) {
     console.error('Resposta inválida de vendas:', data)
@@ -50,7 +50,7 @@ export const vendaService = {
 },
 
   realizarVenda: async (venda: NovaVenda): Promise<Venda> => {
-    const { data } = await api.post('/api/Venda', venda)
+    const { data } = await api.post('/Venda', venda)
     return data
   }
 }

@@ -3,12 +3,11 @@ import type { Produto, NovoProduto } from '../types/Produto'
 
 export const produtoService = {
   listar: async (): Promise<Produto[]> => {
-    const { data } = await api.get('/api/Produto')
+    const { data } = await api.get('/Produto')
 
     if (Array.isArray(data)) {
       return data
     }
-
     // Algumas APIs retornam a lista dentro de uma propriedade.
     if (Array.isArray(data?.$values)) {
       return data.$values
@@ -19,7 +18,7 @@ export const produtoService = {
   },
 
   criar: async (produto: NovoProduto): Promise<Produto> => {
-    const { data } = await api.post('/api/Produto', produto)
+    const { data } = await api.post('/Produto', produto)
     return data
   }
 }

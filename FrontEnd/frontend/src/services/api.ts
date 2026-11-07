@@ -1,3 +1,4 @@
+
 import axios from 'axios'
 
 const api = axios.create({
@@ -8,11 +9,25 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(config => {
-  const saved = localStorage.getItem('auth')
-  if (saved) {
-    const { token } = JSON.parse(saved)
-    config.headers.Authorization = `Bearer ${token}`
+  // Login não precisa de token anterior
+  if (config.url?.toLowerCase().includes('/auth/login')) {
+    return config
   }
+
+  const saved = localStorage.getItem('auth')
+
+  if (saved) {
+    try {
+      const auth = JSON.parse(saved)
+
+      if (auth.token) {
+        config.headers.Authorization = `Bearer ${auth.token}`
+      }
+    } catch {
+      localStorage.removeItem('auth')
+    }
+  }
+
   return config
 })
 
