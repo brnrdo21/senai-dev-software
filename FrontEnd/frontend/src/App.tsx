@@ -9,6 +9,7 @@ import ProdutosPage from './pages/ProdutosPage'
 import ClientesPage from './pages/ClientesPage'
 import VendasPage from './pages/VendasPage'
 
+
 function Layout() {
   const location = useLocation()
   const estaNoLogin = location.pathname === '/login'
@@ -16,7 +17,7 @@ function Layout() {
   const [collapsed, setCollapsed] = useState(false)
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="app">
       {isAuthenticated && (
         <Sidebar
           collapsed={collapsed}
@@ -24,7 +25,7 @@ function Layout() {
         />
       )}
 
-      <main style={{ flex: 1,minWidth: 0, padding: estaNoLogin ? 0 : '24px'}}>
+      <main className={estaNoLogin ? 'main-content login-layout' : 'main-content'}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 

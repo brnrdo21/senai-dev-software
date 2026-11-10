@@ -105,8 +105,22 @@ function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
             }
           >
             <span className="sidebar-link-icon">
-              <span className="sales-nav-icon">↗</span>
-            </span>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+            <path d="M3 3h2l2.2 11.5a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6" />
+            <circle cx="10" cy="20" r="1.2" />
+            <circle cx="18" cy="20" r="1.2" />
+          </svg>
+        </span>
 
             {!collapsed && (
               <>

@@ -1,4 +1,3 @@
-
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -32,19 +31,6 @@ function LoginPage() {
 
   return (
     <main className="login-page">
-      <aside className="login-sidebar">
-        <div className="login-logo">
-          <span>M</span>
-          <strong>Meu App</strong>
-        </div>
-
-        <div className="login-decoration" />
-        <div className="login-decoration login-decoration-bottom" />
-        <div className="login-line">
-          <span />
-        </div>
-      </aside>
-
       <section className="login-main">
         <form className="login-card" onSubmit={handleSubmit}>
           <div className="login-icon">M</div>
@@ -58,7 +44,7 @@ function LoginPage() {
                 type="email"
                 placeholder="Digite seu e-mail"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 autoComplete="email"
                 required
               />
@@ -74,11 +60,10 @@ function LoginPage() {
                 type={mostrarSenha ? 'text' : 'password'}
                 placeholder="Digite sua senha"
                 value={senha}
-                onChange={(e) => setSenha(e.target.value)}
+                onChange={e => setSenha(e.target.value)}
                 autoComplete="current-password"
                 required
               />
-
               <button
                 type="button"
                 className="login-toggle"
@@ -92,11 +77,7 @@ function LoginPage() {
 
           {erro && <p className="login-error">{erro}</p>}
 
-          <button
-            type="submit"
-            className="login-submit"
-            disabled={loading}
-          >
+          <button className="login-submit" type="submit" disabled={loading}>
             {loading ? 'Entrando...' : 'Entrar'}
             {!loading && <span>→</span>}
           </button>
