@@ -21,6 +21,7 @@ function LoginPage() {
     try {
       const resposta = await authService.login({ email, senha })
       login(resposta)
+      navigate('/dashboard')
       navigate('/produtos')
     } catch {
       setErro('E-mail ou senha inválidos.')

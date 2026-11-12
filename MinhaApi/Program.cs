@@ -74,6 +74,9 @@ DepartamentosRepository>();
 builder.Services.AddScoped<IDepartamentosService,
 DepartamentosService>();
 
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
 builder.Services

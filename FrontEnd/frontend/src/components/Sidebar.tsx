@@ -16,6 +16,7 @@ interface SidebarProps {
 function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
   // Dados do usuário logado e função para sair
   const { user, logout } = useAuth()
+  
 
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -169,5 +170,6 @@ function Sidebar({ collapsed, setCollapsed }: SidebarProps) {
     </aside>
   )
 }
+
 
 export default Sidebar

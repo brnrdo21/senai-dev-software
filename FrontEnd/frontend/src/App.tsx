@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -8,7 +9,7 @@ import LoginPage from './pages/LoginPage'
 import ProdutosPage from './pages/ProdutosPage'
 import ClientesPage from './pages/ClientesPage'
 import VendasPage from './pages/VendasPage'
-
+import DashboardPage from './pages/DashboardPage'
 
 function Layout() {
   const location = useLocation()
@@ -18,6 +19,7 @@ function Layout() {
 
   return (
     <div className="app">
+
       {isAuthenticated && (
         <Sidebar
           collapsed={collapsed}
@@ -26,12 +28,22 @@ function Layout() {
       )}
 
       <main className={estaNoLogin ? 'main-content login-layout' : 'main-content'}>
+
         <Routes>
           <Route path="/login" element={<LoginPage />} />
 
           <Route
             path="/"
-            element={<Navigate to="/produtos" replace />}
+            element={<Navigate to="/dashboard" replace />}
+          />
+
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
           />
 
           <Route
@@ -60,7 +72,13 @@ function Layout() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="*"
+            element={<Navigate to="/dashboard" replace />}
+          />
         </Routes>
+
       </main>
     </div>
   )
