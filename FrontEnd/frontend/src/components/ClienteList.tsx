@@ -1,15 +1,12 @@
+
 import type { Cliente } from '../types/Cliente'
-import { UsersIcon } from './Icon'
 
 interface Props {
   clientes: Cliente[]
   loading: boolean
 }
 
-function ClienteList({
-  clientes,
-  loading
-}: Props) {
+function ClienteList({ clientes, loading }: Props) {
 
   if (loading) {
     return (
@@ -19,7 +16,6 @@ function ClienteList({
     )
   }
 
-  // Garante que clientes seja um array
   const listaClientes = Array.isArray(clientes)
     ? clientes
     : []
@@ -27,51 +23,43 @@ function ClienteList({
   if (listaClientes.length === 0) {
     return (
       <div className="list-empty">
-        <div className="empty-icon">
-          <UsersIcon size={30} />
-        </div>
-
-        <strong>
-          Nenhum cliente cadastrado
-        </strong>
-
-        <p>
-          Cadastre seu primeiro cliente.
-        </p>
+        <strong>Nenhum cliente cadastrado</strong>
+        <p>Cadastre seu primeiro cliente.</p>
       </div>
     )
   }
 
   return (
-    <ul className="app-list">
+    <ul className="app-list clients-list">
       {listaClientes.map((cliente) => (
         <li
-          className="app-list-item"
+          className="app-list-item client-item"
           key={cliente.id}
         >
-          <div className="list-avatar cliente-avatar">
-            <UsersIcon size={19} />
-          </div>
+          <div className="client-info">
 
-          <div className="list-info">
-            <strong>
-              {cliente.nome}
-            </strong>
+            <div className="client-top">
+              <strong className="client-name">
+                {cliente.nome}
+              </strong>
 
-            <span>
+              <span className="client-badge">
+                Cliente
+              </span>
+            </div>
+
+            <div className="client-email">
               {cliente.email}
-            </span>
+            </div>
 
             {cliente.cpf && (
-              <small>
-                CPF: {cliente.cpf}
-              </small>
+              <div className="client-document">
+                <span>CPF</span>
+                <strong>{cliente.cpf}</strong>
+              </div>
             )}
-          </div>
 
-          <span className="list-badge">
-            Cliente
-          </span>
+          </div>
         </li>
       ))}
     </ul>

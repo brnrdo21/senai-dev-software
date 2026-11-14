@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react'
 
 import type { Produto } from '../types/Produto'
@@ -5,7 +6,6 @@ import { produtoService } from '../services/ProdutoService'
 
 import ProdutoForm from '../components/ProdutoForm'
 import ProdutoList from '../components/ProdutoList'
-import { PackageIcon } from '../components/Icon'
 
 function ProdutosPage() {
   const [produtos, setProdutos] = useState<Produto[]>([])
@@ -32,49 +32,52 @@ function ProdutosPage() {
     <div className="page">
 
       <header className="page-header">
-        <h1>Gestão de Produtos</h1>
-
-        <p>
-          Cadastre e acompanhe seus produtos.
-        </p>
+        <div>
+          <h1>Gestão de Produtos</h1>
+          <p>Cadastre, organize e acompanhe seus produtos.</p>
+        </div>
       </header>
 
       <div className="content-grid">
 
         {/* FORMULÁRIO */}
         <section className="card">
-
           <ProdutoForm
             onProdutoCriado={carregarProdutos}
           />
-
         </section>
 
-        {/* LISTA */}
-       <section className="card">
+        {/* LISTAGEM */}
+        <section className="card products-list-card">
 
-  <div className="card-heading">
+          <div className="products-card-header">
 
-    <div>
-      <h2>Produtos cadastrados</h2>
+            <div className="products-heading">
+              <div className="products-icon">
+                📦
+              </div>
 
-      <p>
-        Lista de produtos
-      </p>
-    </div>
+              <div>
+                <h2>Produtos cadastrados</h2>
+                <p>Gerencie todos os produtos do estoque</p>
+              </div>
+            </div>
 
-    <div className="count-badge">
-      {produtos.length}
-    </div>
+            <div className="products-count">
+              <span>{produtos.length}</span>
+              <small>Produtos</small>
+            </div>
 
-  </div>
+          </div>
 
-  <ProdutoList
-    produtos={produtos}
-    loading={loading}
-  />
+          <div className="products-divider"></div>
 
-</section>
+          <ProdutoList
+            produtos={produtos}
+            loading={loading}
+          />
+
+        </section>
 
       </div>
 

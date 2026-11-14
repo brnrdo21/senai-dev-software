@@ -1,43 +1,50 @@
+
 using MinhaApi.Models;
 using MinhaApi.Repository;
 using MinhaApi.Services;
 
-public class VendaService : IVendaService {
+public class VendaService : IVendaService
+{
     private readonly IVendaRepository _repo;
     private readonly IClienteRepository _clienterepo;
     private readonly IProdutoRepository _produtorepo;
 
-    public VendaService(IVendaRepository repo, IClienteRepository clienterepo, IProdutoRepository produtorepo) {
+    public VendaService(
+        IVendaRepository repo,
+        IClienteRepository clienterepo,
+        IProdutoRepository produtorepo)
+    {
         _repo = repo;
         _clienterepo = clienterepo;
         _produtorepo = produtorepo;
     }
 
-    public Venda Add(Venda venda){
+    public Venda Add(Venda venda)
+    {
         var produto = _produtorepo.GetById(venda.Produto_id);
-        if(produto == null) 
-        throw new ArgumentException("Produto não encontrado");
 
-        if(venda.Quantidade <= 0)
-        throw new ArgumentException("Quantidade inválida");
+        if (produto == null)
+            throw new ArgumentException("Produto não encontrado.");
 
-        if(produto.Estoque < venda.Quantidade)
-        throw new ArgumentException("Estoque insuficiente");
+        if (venda.Quantidade <= 0)
+            throw new ArgumentException("Quantidade inválida.");
 
-        if(venda.Cliente_id <= 0)
-        throw new ArgumentException("Cliente inválido");
+        if (produto.Estoque < venda.Quantidade)
+            throw new ArgumentException("Estoque insuficiente.");
+
+        if (venda.Cliente_id <= 0)
+            throw new ArgumentException("Cliente inválido.");
+
+        venda.Valor = produto.Preco * venda.Quantidade;
+        venda.Data_venda = DateTime.Now;
+        venda.Ativo = true;
+
         return _repo.Add(venda);
     }
-    public int calcularValorTotal(Venda venda) {
-        var produto = _produtorepo.GetById(venda.Produto_id);
-        if(produto == null) 
-        throw new ArgumentException("Produto não encontrado");
-        var valorTotal = produto.Preco * venda.Quantidade;
-        return (int)valorTotal;
-    }
+
     public IEnumerable<Venda> GetAll()
-    => _repo.GetAll();
+        => _repo.GetAll();
 
     public Venda? GetById(int id)
-    => _repo.GetById(id);
+        => _repo.GetById(id);
 }

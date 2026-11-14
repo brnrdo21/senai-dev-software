@@ -10,7 +10,13 @@ interface Props {
   loading: boolean
 }
 
-function VendaList({ vendas, clientes, produtos, loading }: Props) {
+function VendaList({
+  vendas,
+  clientes,
+  produtos,
+  loading
+}: Props) {
+
   function moeda(valor: number) {
     return Number(valor).toLocaleString('pt-BR', {
       style: 'currency',
@@ -21,18 +27,27 @@ function VendaList({ vendas, clientes, produtos, loading }: Props) {
   function dataFormatada(data: Date | string) {
     const dataVenda = new Date(data)
 
-    if (Number.isNaN(dataVenda.getTime())) return '—'
+    if (Number.isNaN(dataVenda.getTime())) {
+      return '—'
+    }
 
     return dataVenda.toLocaleDateString('pt-BR')
   }
 
   return (
     <section className="sales-card sales-history">
+
       <div className="sales-card-header">
         <div>
-          <span className="sales-eyebrow">MOVIMENTAÇÕES</span>
+          <span className="sales-eyebrow">
+            MOVIMENTAÇÕES
+          </span>
+
           <h2>Histórico de vendas</h2>
-          <p>Acompanhe as vendas registradas no sistema.</p>
+
+          <p>
+            Acompanhe as vendas registradas no sistema.
+          </p>
         </div>
 
         <span className="sales-count">
@@ -41,57 +56,88 @@ function VendaList({ vendas, clientes, produtos, loading }: Props) {
       </div>
 
       {loading ? (
-        <div className="sales-empty">Carregando vendas...</div>
+        <div className="sales-empty">
+          Carregando vendas...
+        </div>
       ) : vendas.length === 0 ? (
         <div className="sales-empty">
-          <div className="sales-empty-mark">—</div>
           <strong>Nenhuma venda registrada</strong>
           <p>As vendas realizadas aparecerão aqui.</p>
         </div>
       ) : (
-        <div className="sales-table-wrapper">
-          <table className="sales-table">
-            <thead>
-              <tr>
-                <th>Venda</th>
-                <th>Cliente</th>
-                <th>Produto</th>
-                <th>Qtd.</th>
-                <th>Valor total</th>
-                <th>Data</th>
-              </tr>
-            </thead>
 
-            <tbody>
-              {vendas.map(venda => {
-               const cliente = clientes.find(
-                item => String(item.id) === String(venda.clienteId)
-                )
+        <div className="sales-list">
 
-                const produto = produtos.find(
-                item => String(item.id) === String(venda.produtoId)
-                )
-                return (
-                  <tr key={venda.id}>
-                    <td>
-                      <span className="sales-id">
-                        #{String(venda.id).padStart(3, '0')}
-                      </span>
-                    </td>
-                    <td>{cliente?.nome ?? `Cliente #${venda.clienteId}`}</td>
-                    <td>{produto?.nome ?? `Produto #${venda.produtoId}`}</td>
-                    <td>{venda.quantidade}</td>
-                    <td className="sales-value">
-                      {moeda(venda.valor_total)}
-                    </td>
-                    <td>{dataFormatada(venda.data_venda)}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+          {vendas.map(venda => {
+
+            const cliente = clientes.find(
+              item => String(item.id) === String(venda.clienteId)
+            )
+
+            const produto = produtos.find(
+              item => String(item.id) === String(venda.produtoId)
+            )
+
+            return (
+              <article
+                className="sale-item"
+                key={venda.id}
+              >
+
+                <div className="sale-top">
+
+                  <div>
+                    <span className="sale-label">
+                      IDENTIFICAÇÃO DA VENDA
+                    </span>
+
+                    <strong className="sales-id">
+                      #{String(venda.id).padStart(3, '0')}
+                    </strong>
+                  </div>
+
+                  <span className="sale-date">
+                    {dataFormatada(venda.data_venda)}
+                  </span>
+
+                </div>
+
+                <div className="sale-value">
+                  {moeda(venda.valor_total)}
+                </div>
+
+                <div className="sale-details">
+
+                  <div className="sale-detail">
+                    <span>Cliente</span>
+                    <strong>
+                      {cliente?.nome ?? `Cliente #${venda.clienteId}`}
+                    </strong>
+                  </div>
+
+                  <div className="sale-detail">
+                    <span>Produto</span>
+                    <strong>
+                      {produto?.nome ?? `Produto #${venda.produtoId}`}
+                    </strong>
+                  </div>
+
+                  <div className="sale-detail">
+                    <span>Quantidade</span>
+                    <strong>
+                      {venda.quantidade} unidades
+                    </strong>
+                  </div>
+
+                </div>
+
+              </article>
+            )
+          })}
+
         </div>
       )}
+
     </section>
   )
 }

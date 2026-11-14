@@ -8,27 +8,35 @@ const api = axios.create({
   }
 })
 
-api.interceptors.request.use(config => {
-  // Login não precisa de token anterior
-  if (config.url?.toLowerCase().includes('/auth/login')) {
-    return config
-  }
+api.interceptors.request.use(
+  (config) => {
+    // Recupera os dados de autenticação
+    const saved = localStorage.getItem('auth')
 
-  const saved = localStorage.getItem('auth')
+    if (saved) {
+      try {
+        const auth = JSON.parse(saved)
 
-  if (saved) {
-    try {
-      const auth = JSON.parse(saved)
+        // Recupera o token
+        const token = auth.token || auth.accessToken
 
-      if (auth.token) {
-        config.headers.Authorization = `Bearer ${auth.token}`
+        if (token) {
+          config.headers.set('Authorization', `Bearer ${token}`)
+          console.log('JWT enviado na requisição:', config.url)
+        } else {
+          console.error('Token não encontrado dentro de auth')
+        }
+
+      } catch (error) {
+        console.error('Erro ao ler autenticação:', error)
       }
-    } catch {
-      localStorage.removeItem('auth')
+    } else {
+      console.error('Nenhum dado de autenticação encontrado')
     }
-  }
 
-  return config
-})
+    return config
+  },
+  (error) => Promise.reject(error)
+)
 
 export default api

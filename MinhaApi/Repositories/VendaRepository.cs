@@ -8,26 +8,72 @@ public class VendaRepository : IVendaRepository {
     public VendaRepository(IConfiguration config) 
       => _connectionString = config.GetConnectionString("DefaultConnection")!;
 
-    public Venda Add(Venda v) {
+    
+public Venda Add(Venda v)
+{
     using var conn = new MySqlConnection(_connectionString);
     conn.Open();
 
-    string sql = @"INSERT INTO venda (cliente_id, produto_id, valor, data_venda, ativo) 
-                   VALUES (@ClienteId, @ProdutoId, @Valor, @DataVenda, @Ativo);
-                   SELECT LAST_INSERT_ID();";
+    using var transaction = conn.BeginTransaction();
 
-    using var cmd = new MySqlCommand(sql, conn);
-    cmd.Parameters.AddWithValue("@ClienteId", v.Cliente_id);
-    cmd.Parameters.AddWithValue("@ProdutoId", v.Produto_id);
-    cmd.Parameters.AddWithValue("@Valor", v.Valor);
-    cmd.Parameters.AddWithValue("@DataVenda", v.Data_venda);
-    cmd.Parameters.AddWithValue("@Ativo", v.Ativo);
+    try
+    {
+        // Atualiza o estoque somente se houver quantidade suficiente
+        string sqlEstoque = @"
+            UPDATE produtos
+            SET estoque = estoque - @Quantidade
+            WHERE id = @ProdutoId
+            AND estoque >= @Quantidade";
 
-    // Executa a inserção e recupera o ID gerado pelo MySQL
-    var idGerado = cmd.ExecuteScalar();
-    v.Id = Convert.ToInt32(idGerado);
-    return v;
+        using var cmdEstoque = new MySqlCommand(
+            sqlEstoque, conn, transaction);
+
+        cmdEstoque.Parameters.AddWithValue(
+            "@Quantidade", v.Quantidade);
+
+        cmdEstoque.Parameters.AddWithValue(
+            "@ProdutoId", v.Produto_id);
+
+        int linhas = cmdEstoque.ExecuteNonQuery();
+
+        if (linhas == 0)
+            throw new ArgumentException(
+                "Estoque insuficiente ou produto não encontrado.");
+
+        // Registra a venda
+        string sqlVenda = @"
+            INSERT INTO venda
+            (cliente_id, produto_id, quantidade, valor, data_venda, ativo)
+            VALUES
+            (@ClienteId, @ProdutoId, @Quantidade, @Valor, @DataVenda, @Ativo);
+
+            SELECT LAST_INSERT_ID();";
+
+        using var cmdVenda = new MySqlCommand(
+            sqlVenda, conn, transaction);
+
+        cmdVenda.Parameters.AddWithValue("@ClienteId", v.Cliente_id);
+        cmdVenda.Parameters.AddWithValue("@ProdutoId", v.Produto_id);
+        cmdVenda.Parameters.AddWithValue("@Quantidade", v.Quantidade);
+        cmdVenda.Parameters.AddWithValue("@Valor", v.Valor);
+        cmdVenda.Parameters.AddWithValue("@DataVenda", v.Data_venda);
+        cmdVenda.Parameters.AddWithValue("@Ativo", v.Ativo);
+
+        var idGerado = cmdVenda.ExecuteScalar();
+
+        v.Id = Convert.ToInt32(idGerado);
+
+        transaction.Commit();
+
+        return v;
+    }
+    catch
+    {
+        transaction.Rollback();
+        throw;
+    }
 }
+
 public IEnumerable<Venda> GetAll() {
       var lista = new List<Venda>();
       using var conn = new MySqlConnection(_connectionString);

@@ -1,15 +1,12 @@
+
 import type { Produto } from '../types/Produto'
-import { PackageIcon } from './Icon'
 
 interface Props {
   produtos: Produto[]
   loading: boolean
 }
 
-function ProdutoList({
-  produtos,
-  loading
-}: Props) {
+function ProdutoList({ produtos, loading }: Props) {
 
   if (loading) {
     return (
@@ -26,58 +23,47 @@ function ProdutoList({
   if (listaProdutos.length === 0) {
     return (
       <div className="list-empty">
-        <div className="empty-icon">
-          <PackageIcon size={30} />
-        </div>
-
-        <strong>
-          Nenhum produto cadastrado
-        </strong>
-
-        <p>
-          Cadastre seu primeiro produto.
-        </p>
+        <strong>Nenhum produto cadastrado</strong>
+        <p>Cadastre seu primeiro produto para começar.</p>
       </div>
     )
   }
 
   return (
-    <ul className="app-list">
+    <ul className="app-list products-list">
       {listaProdutos.map((produto) => (
-        <li
-          className="app-list-item"
-          key={produto.id}
-        >
-          <div className="list-avatar produto-avatar">
-            <PackageIcon size={19} />
-          </div>
+        <li className="app-list-item product-item" key={produto.id}>
 
-          <div className="list-info">
-            <strong>
-              {produto.nome}
+          <div className="product-info">
+
+            <div className="product-top">
+              <strong className="product-name">
+                {produto.nome}
+              </strong>
+
+              <span
+                className={`list-badge ${
+                  produto.ativo ? 'active' : 'inactive'
+                }`}
+              >
+                {produto.ativo ? 'Ativo' : 'Inativo'}
+              </span>
+            </div>
+
+            <strong className="product-price">
+              {Number(produto.preco).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+              })}
             </strong>
 
-            <span className="product-price">
-              R${' '}
-              {Number(produto.preco).toFixed(2)}
-            </span>
+            <div className="product-stock">
+              <span>Estoque disponível</span>
+              <strong>{produto.estoque} unidades</strong>
+            </div>
 
-            <small>
-              Estoque: {produto.estoque}
-            </small>
           </div>
 
-          <span
-            className={`list-badge ${
-              produto.ativo
-                ? 'active'
-                : 'inactive'
-            }`}
-          >
-            {produto.ativo
-              ? 'Ativo'
-              : 'Inativo'}
-          </span>
         </li>
       ))}
     </ul>
