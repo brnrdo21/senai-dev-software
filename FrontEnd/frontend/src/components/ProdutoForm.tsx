@@ -1,3 +1,4 @@
+
 import { useState, type FormEvent } from 'react'
 import { produtoService } from '../services/ProdutoService'
 
@@ -10,6 +11,7 @@ function ProdutoForm({ onProdutoCriado }: Props) {
   const [preco, setPreco] = useState('')
   const [estoque, setEstoque] = useState('')
   const [ativo, setAtivo] = useState(true)
+  const [foto, setFoto] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
 
@@ -20,19 +22,26 @@ function ProdutoForm({ onProdutoCriado }: Props) {
     try {
       setLoading(true)
 
-      await produtoService.criar({
+      const produto = await produtoService.criar({
         nome: nome.trim(),
         preco: Number(preco),
         estoque: Number(estoque),
         ativo,
       })
 
+      if (foto) {
+        await produtoService.enviarFoto(produto.id, foto)
+      }
+
       setNome('')
       setPreco('')
       setEstoque('')
       setAtivo(true)
+      setFoto(null)
+
       onProdutoCriado()
-    } catch {
+    } catch (error) {
+      console.error(error)
       setErro('Erro ao cadastrar produto. Tente novamente.')
     } finally {
       setLoading(false)
@@ -88,6 +97,20 @@ function ProdutoForm({ onProdutoCriado }: Props) {
             required
           />
         </div>
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="produto-foto">Foto do produto</label>
+        <input
+          id="produto-foto"
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          onChange={e => setFoto(e.target.files?.[0] || null)}
+        />
+
+        {foto && (
+          <p>Imagem selecionada: {foto.name}</p>
+        )}
       </div>
 
       <label className="checkbox-label">

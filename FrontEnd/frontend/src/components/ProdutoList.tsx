@@ -31,8 +31,21 @@ function ProdutoList({ produtos, loading }: Props) {
 
   return (
     <ul className="app-list products-list">
-      {listaProdutos.map((produto) => (
+      {listaProdutos.map(produto => (
         <li className="app-list-item product-item" key={produto.id}>
+
+          <div className="product-image">
+            {produto.fotoBase64 ? (
+              <img
+                src={produto.fotoBase64}
+                alt={produto.nome}
+              />
+            ) : (
+              <div className="product-no-image">
+                Sem foto
+              </div>
+            )}
+          </div>
 
           <div className="product-info">
 

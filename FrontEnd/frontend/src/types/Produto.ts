@@ -1,4 +1,3 @@
-// src/types/Produto.ts
 
 export interface Produto {
   id: number
@@ -6,7 +5,8 @@ export interface Produto {
   preco: number
   estoque: number
   ativo: boolean
+  foto?: string | null
+  fotoBase64?: string | null
 }
 
-// Tipo para criação — sem o id (gerado pela MinhaAPI)
-export type NovoProduto = Omit<Produto, 'id'>
+export type NovoProduto = Omit<Produto, 'id' | 'foto' | 'fotoBase64'>

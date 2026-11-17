@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-[Authorize]   // 🔒 só usuários logados (aula de JWT)
-[ApiController]
 [Route("api/[controller]")]
 public class DashboardController : ControllerBase
 {

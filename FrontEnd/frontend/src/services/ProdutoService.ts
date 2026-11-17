@@ -1,3 +1,4 @@
+
 import api from './api'
 import type { Produto, NovoProduto } from '../types/Produto'
 
@@ -8,7 +9,7 @@ export const produtoService = {
     if (Array.isArray(data)) {
       return data
     }
-    // Algumas APIs retornam a lista dentro de uma propriedade.
+
     if (Array.isArray(data?.$values)) {
       return data.$values
     }
@@ -19,6 +20,18 @@ export const produtoService = {
 
   criar: async (produto: NovoProduto): Promise<Produto> => {
     const { data } = await api.post('/Produto', produto)
+    return data
+  },
+
+  enviarFoto: async (id: number, foto: File): Promise<Produto> => {
+    const formData = new FormData()
+    formData.append('foto', foto)
+
+    const { data } = await api.post(
+      `/Produto/${id}/foto`,
+      formData
+    )
+
     return data
   }
 }

@@ -36,8 +36,10 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddControllers();
 
-builder.Services.AddCors(options => {
-    options.AddPolicy("FrontendPolicy", policy => {
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
         policy.WithOrigins("http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod();
@@ -98,8 +100,11 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
+builder.Services.AddScoped<IFotoService, FotoService>();
+
 var app = builder.Build();
 
+app.UseStaticFiles();
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();  // 1º quem é você?
 app.UseAuthorization();   // 2º você pode entrar?
